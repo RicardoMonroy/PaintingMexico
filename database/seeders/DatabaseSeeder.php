@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             ProfileTranslatesTableSeeder::class,
             SalesTableSeeder::class,
             SaleGalleriesTableSeeder::class,
+            InfoTableSeeder::class,
         ]);
 
     }
