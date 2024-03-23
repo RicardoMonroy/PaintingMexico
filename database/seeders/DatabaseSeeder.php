@@ -30,10 +30,14 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::factory()->count(5)->create();
 
         $this->call([
-            \Database\Seeders\PostsTableSeeder::class,
-            \Database\Seeders\ArtworksTableSeeder::class,
-            \Database\Seeders\ImagesTableSeeder::class,
-            // Cualquier otro seeder que tengas...
+            PostsTableSeeder::class,
+            ArtworksTableSeeder::class,
+            ImagesTableSeeder::class,
+            VideosTableSeeder::class,
+            ProfilesTableSeeder::class,
+            ProfileTranslatesTableSeeder::class,
+            SalesTableSeeder::class,
+            SaleGalleriesTableSeeder::class,
         ]);
 
     }
