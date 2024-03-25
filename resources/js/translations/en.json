@@ -1,0 +1,22 @@
+{
+    "welcome": "Welcome to Dashboard",
+    "dashboard": "Dashboard",
+    "configuracion": "Settings",
+    "usuarios": "Users",
+    "posts": "Blog Posts",
+    "ventas": "Sales",
+    "informacion": "Site Information",
+    "cerrarSesion": "Log Out",
+    "bienvenidaUsuarios": "User Administration",
+    "nuevo": "Add New",
+    "faltanUsuarios": "No users found",
+    "nombre": "Name",
+    "email": "Email",
+    "password": "Password",
+    "acciones": "Actions",
+    "editar": "Edit",
+    "elegirRol": "Select a role",
+    "perfilUsuario": "User Profile",
+    "btnAceptar": "Accept",
+    "btnCancelar": "Cancel"
+}

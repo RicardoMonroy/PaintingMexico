@@ -10,9 +10,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\User;
+use App\Models\Profile;
 
 class ProfileController extends Controller
 {
+    public function show(User $user)
+    {
+        try {
+            // Ya que estás inyectando el modelo User directamente,
+            // puedes acceder al perfil relacionado a través de la relación definida en el modelo.
+            $profile = $user->profile()->with('translates')->firstOrFail();
+            return response()->json($profile);
+        } catch (\Exception $e) {
+            Log::error("Error al cargar el perfil: " . $e->getMessage());
+            return response()->json(['error' => 'Error al cargar el perfil'], 500);
+        }
+    }
+
     /**
      * Display the user's profile form.
      */

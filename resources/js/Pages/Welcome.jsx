@@ -11,7 +11,7 @@ export default function Welcome(props) {
                     <p>{props.info.email}</p>
                 </div>
             )}
-            <InertiaLink href="/login">Iniciar super sesión</InertiaLink>
+            <InertiaLink href="/login">Iniciar sesión</InertiaLink>
         </div>
     );
 }

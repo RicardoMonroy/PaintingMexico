@@ -32,12 +32,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    // Agrega rutas adicionales aquí
+    Route::get('/configuracion', function() {
+        return Inertia::render('Configuracion');
+    })->name('configuracion');
+
+    Route::get('/usuarios', function() {
+        return Inertia::render('Usuarios');
+    })->name('usuarios');
+
+    
+    Route::post('/logout', function () {
+        Auth::logout();
+        return redirect('/');
+    })->name('logout');
 });
 
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/');
-})->name('logout');
+
 
 // Route::get('/dashboard', function () {
 //     return Inertia::render('Dashboard');

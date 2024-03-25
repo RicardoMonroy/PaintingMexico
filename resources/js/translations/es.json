@@ -1,0 +1,22 @@
+{
+    "welcome": "Bienvenido al Dashboard",
+    "dashboard": "Tablero",
+    "configuracion": "Configuración",
+    "usuarios": "Usuarios",
+    "posts": "Posts de Blog",
+    "ventas": "Ventas",
+    "informacion": "Información del Sitio",
+    "cerrarSesion": "Cerrar Sesión",
+    "bienvenidaUsuarios": "Administración de Usuarios",
+    "nuevo": "Añadir Nuevo",
+    "faltanUsuarios": "No se encontraron usuarios",
+    "nombre": "Nombre",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "acciones": "Acciones",
+    "editar": "Editar",
+    "elegirRol": "Seleccione un rol",
+    "perfilUsuario": "Perfil del Usuario",
+    "btnAceptar": "Aceptar",
+    "btnCancelar": "Cancelar"
+}
