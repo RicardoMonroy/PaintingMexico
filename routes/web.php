@@ -5,6 +5,11 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\Info;
+use App\Models\Artwork;
+use App\Models\Post;
+use App\Models\User;
+use App\Models\Profile;
+use App\Http\Controllers\ArtworkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +23,17 @@ use App\Models\Info;
 */
 
 Route::get('/', function () {
-    $info = Info::first();
+
+    $info = Info::first();    
+    $artworks = Artwork::with(['translations', 'images', 'videos'])->get(); // Traer todos los artworks con sus traducciones e imágenes
+    $posts = Post::with(['translations', 'user'])->get();
+    $users = User::whereHas('profile')->with(['profile.translates'])->get();
+
     return Inertia::render('Welcome', [
         'info' => $info,
+        'artworks' => $artworks, // Pasar obras de arte a la vista
+        'posts' => $posts,
+        'users' => $users,
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,

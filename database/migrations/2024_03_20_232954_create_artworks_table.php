@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('artworks', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 8, 2);
+            $table->string('front');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 

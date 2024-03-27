@@ -18,7 +18,7 @@ class ArtworkFactory extends Factory
     public function definition(): array
     {
         return [
-            'price' => $this->faker->randomFloat(2, 10, 5000), // Genera un precio aleatorio entre 10 y 5000
+            'front' => $this->faker->imageUrl(640, 480, 'location'), // Genera un precio aleatorio entre 10 y 5000
             'user_id' => function () {
                 return \App\Models\User::inRandomOrder()->first()->id ?? \App\Models\User::factory()->create()->id;
             },

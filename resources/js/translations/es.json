@@ -1,4 +1,9 @@
 {
+    "galeria": "Galería",
+    "blog": "Blog",
+    "artistas": "Artistas",
+    "contacto": "Contacto",
+    "iniciarSesion": "Iniciar Sesión",
     "welcome": "Bienvenido al Dashboard",
     "dashboard": "Tablero",
     "configuracion": "Configuración",
@@ -6,6 +11,8 @@
     "posts": "Posts de Blog",
     "ventas": "Ventas",
     "informacion": "Información del Sitio",
+    "mensajeContacto": "Si tienes alguna pregunta o necesitas más información, no dudes en contactarnos",
+    "enviarCorreoA": "Enviar correo a",
     "cerrarSesion": "Cerrar Sesión",
     "bienvenidaUsuarios": "Administración de Usuarios",
     "nuevo": "Añadir Nuevo",
@@ -18,5 +25,6 @@
     "elegirRol": "Seleccione un rol",
     "perfilUsuario": "Perfil del Usuario",
     "btnAceptar": "Aceptar",
-    "btnCancelar": "Cancelar"
+    "btnCancelar": "Cancelar",
+    "btnCerrar": "Cerrar"
 }

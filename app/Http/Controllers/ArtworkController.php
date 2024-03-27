@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Artwork;
 
 class ArtworkController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // $artworks = Artwork::with(['translations', 'images'])->get(); // Traer todos los artworks con sus traducciones e imágenes
+
+        // return Inertia::render('Welcome', ['artworks' => $artworks]);
     }
 
     /**

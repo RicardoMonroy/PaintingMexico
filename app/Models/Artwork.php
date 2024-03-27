@@ -9,7 +9,7 @@ class Artwork extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['price'];
+    protected $fillable = ['front'];
 
     public function user()
     {

@@ -33,10 +33,10 @@ const DashboardLayout = ({ children }) => {
                     <li><InertiaLink href="/logout" className="block py-2 text-button text hover:bg-tertiary" method="post" as="button">{translations.cerrarSesion}</InertiaLink></li>
                 </ul>
                 <div className="absolute bottom-0 w-full text-center pb-5">
-                <select onChange={(e) => changeLanguage(e.target.value)} defaultValue={language}>
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                </select>
+                    <select onChange={(e) => changeLanguage(e.target.value)} defaultValue={language}>
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                    </select>
                 </div>
             </div>
 
