@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import UserProfile from './UserProfile';
@@ -49,7 +50,6 @@ const Usuarios = () => {
 
     const handleEditClick = (userId) => {
         setSelectedUserId(userId);
-        console.log(userId)
         setIsProfileModalOpen(true); // Abre el modal
     };
 

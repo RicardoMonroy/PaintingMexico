@@ -14,7 +14,7 @@ class ArtworksTableSeeder extends Seeder
     public function run(): void
     {
         // Crear 30 obras de arte
-        Artwork::factory()->count(15)->create()->each(function ($artwork) {
+        Artwork::factory()->count(30)->create()->each(function ($artwork) {
             // Para cada obra de arte, crear una traducción en inglés y una en español
             $artwork->translations()->saveMany(\App\Models\ArtworkTranslate::factory()->count(1)->make(['locale' => 'en']));
             $artwork->translations()->saveMany(\App\Models\ArtworkTranslate::factory()->count(1)->make(['locale' => 'es']));

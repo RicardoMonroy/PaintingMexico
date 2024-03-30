@@ -139,10 +139,12 @@ export default function Welcome(props) {
 
             {/* Sección de Bienvenida */}
             <div className="text-center py-10">
-                {props.info && (
+                {props.info ? (
                     <div>
                         <img src={props.info.banner} alt="Banner" className="w-full h-auto mx-auto" />
                     </div>
+                ): (
+                    <p className="mb-4 text font-primary">{translations.noInfoAvailable}:</p>
                 )}
             </div>
 
@@ -150,21 +152,25 @@ export default function Welcome(props) {
             <div id="gallery" className="py-20 bg-gray-100">
                 <h2 className="text-3xl font-bold text-center">{translations.galeria}</h2><br />
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        {props.artworks.map((artwork, index) => {
-                            const spanClass = index % 5 === 0 ? 'row-span-2 col-span-2' : '';
-                            return (
-                                <div key={artwork.id} className={`overflow-hidden ${spanClass}`}>
-                                    <img
-                                        className="w-full h-full object-cover rounded cursor-pointer"
-                                        src={artwork.front}
-                                        alt={artwork.translations[0]?.id || "Art image"}
-                                        onClick={() => openArtworkModal(artwork)}
-                                    />
-                                </div>
-                            );
-                        })}
-                    </div>
+                    {props.artworks.length > 0 ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                            {props.artworks.map((artwork, index) => {
+                                const spanClass = index % 5 === 0 ? 'row-span-2 col-span-2' : '';
+                                return (
+                                    <div key={artwork.id} className={`overflow-hidden ${spanClass}`}>
+                                        <img
+                                            className="w-full h-full object-cover rounded cursor-pointer"
+                                            src={artwork.front}
+                                            alt={artwork.translations[0]?.id || "Art image"}
+                                            onClick={() => openArtworkModal(artwork)}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className="text-center">{translations.noInfoAvailable}</p>
+                    )}
                 </div>
                 {selectedArtwork && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">                        
@@ -227,28 +233,30 @@ export default function Welcome(props) {
             <div id="blog" className="py-20 bg-gray-100">
                 <h2 className="text-3xl font-bold text-center">{translations.blog}</h2><br />
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {props.posts.map((post) => {
-                            // Encuentra la traducción del post según el idioma actual
-                            const postTranslation = post.translations.find(t => t.locale === language);
-
-                            return (
-                                <div key={post.id} className="overflow-hidden rounded-lg shadow-lg" onClick={() => openPostModal(post)}>
-                                    <img
-                                        className="w-full h-48 object-cover"
-                                        src={post.cover}
-                                        alt={postTranslation?.title || 'Cover image'}
-                                    />
-                                    <div className="px-6 py-4">
-                                        <div className="font-bold text-xl mb-2">{postTranslation?.title || 'Título no disponible'}</div>
-                                        <p className="text-gray-700 text-base">
-                                            {post.user?.name || 'Autor no disponible'}
-                                        </p>
+                    {props.posts.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {props.posts.map((post) => {
+                                const postTranslation = post.translations.find(t => t.locale === language);
+                                return (
+                                    <div key={post.id} className="overflow-hidden rounded-lg shadow-lg" onClick={() => openPostModal(post)}>
+                                        <img
+                                            className="w-full h-48 object-cover"
+                                            src={post.cover}
+                                            alt={postTranslation?.title || 'Cover image'}
+                                        />
+                                        <div className="px-6 py-4">
+                                            <div className="font-bold text-xl mb-2">{postTranslation?.title || 'Título no disponible'}</div>
+                                            <p className="text-gray-700 text-base">
+                                                {post.user?.name || 'Autor no disponible'}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className="text-center">{translations.noInfoAvailable}</p>
+                    )}
                 </div>
                 {isPostModalOpen && selectedPost && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
@@ -281,28 +289,30 @@ export default function Welcome(props) {
             <div id="artists" className="py-20 bg-gray-100">
                 <h2 className="text-3xl font-bold text-center">{translations.artistas}</h2><br />
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {props.users.filter(user => user.profile).map((user) => {
-                            // Encuentra la traducción del perfil según el idioma actual
-                            const profileTranslation = user.profile.translates.find(t => t.locale === language);
-
-                            return (
-                                <div key={user.id} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" onClick={() => openProfileModal(user)}>
-                                    <img
-                                        className="w-full h-48 object-cover"
-                                        src={user.profile.avatar}
-                                        alt={profileTranslation?.title || 'Avatar'}
-                                    />
-                                    <div className="px-6 py-4">
-                                        <div className="font-bold text-xl mb-2">{user.name}</div>
-                                        <p className="text-gray-700 text-base">
-                                            {profileTranslation?.description || 'Descripción no disponible'}
-                                        </p>
+                    {props.users.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {props.users.filter(user => user.profile).map((user) => {
+                                const profileTranslation = user.profile.translates.find(t => t.locale === language);
+                                return (
+                                    <div key={user.id} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" onClick={() => openProfileModal(user)}>
+                                        <img
+                                            className="w-full h-48 object-cover"
+                                            src={user.profile.avatar}
+                                            alt={profileTranslation?.title || 'Avatar'}
+                                        />
+                                        <div className="px-6 py-4">
+                                            <div className="font-bold text-xl mb-2">{user.name}</div>
+                                            <p className="text-gray-700 text-base">
+                                                {profileTranslation?.description || 'Descripción no disponible'}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className="text-center">{translations.noInfoAvailable}</p>
+                    )}
                 </div>
                 {isProfileModalOpen && selectedUser && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
@@ -333,12 +343,16 @@ export default function Welcome(props) {
             <div id="contact" className="py-20 bg-gray-100">
                 <h2 className="text-3xl font-bold text-center">{translations.contacto}</h2>
                 <div className="mt-8 text-center">
-                    <p className="mb-4 text font-primary">{translations.mensajeContacto}:</p>
-                    <a href={`mailto:${props.info.email}`} className="inline-block bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
-                        {translations.enviarCorreoA} {props.info.email}
-                    </a>
-                </div>
-                {/* No es necesario un formulario aquí, el enlace maneja la acción */}
+                    {props.info ? (                            
+                        <>
+                            <p className="mb-4 text font-primary">{translations.mensajeContacto}:</p><a href={`mailto:${props.info.email}`} className="inline-block bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
+                                {translations.enviarCorreoA} {props.info.email}
+                            </a>
+                        </>                    
+                    ) : (
+                        <p className="mb-4 text font-primary">{translations.noInfoAvailable}:</p>
+                    )}
+                </div>                
             </div>
 
         </div>

@@ -26,5 +26,9 @@
     "perfilUsuario": "User Profile",
     "btnAceptar": "Accept",
     "btnCancelar": "Cancel",
-    "btnCerrar": "Close"
+    "btnCerrar": "Close",
+    "noInfoAvailable": "No hay contenido disponible",
+    "descripcionEspanol": "Description in spanish",
+    "descripcionIngles": "Description in english",
+    "loadingProfile": "Loading Profile"
 }

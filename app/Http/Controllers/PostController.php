@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
 
 class PostController extends Controller
 {
@@ -11,7 +12,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        $posts = Post::with('translations')->orderByDesc('created_at')->get();
+
+        return response()->json($posts);
     }
 
     /**
@@ -35,7 +38,7 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return response()->json($post);
     }
 
     /**

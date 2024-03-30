@@ -21,7 +21,7 @@ class ProfileFactory extends Factory
     public function definition(): array
     {
         return [
-            'avatar' => $this->faker->imageUrl(640, 480, 'people'), // Genera una URL de imagen aleatoria
+            'avatar' => 'AvatarDefault.png', 
             // 'user_id' se asignará al crear la instancia
         ];
     }

@@ -15,7 +15,7 @@ class PostsTableSeeder extends Seeder
     public function run(): void
     {
         // Crear 50 posts
-        Post::factory()->count(6)->create()->each(function ($post) {
+        Post::factory()->count(50)->create()->each(function ($post) {
             // Para cada post, crear una traducción en inglés y una en español
             $post->translations()->saveMany(PostTranslate::factory()->count(1)->make(['locale' => 'en']));
             $post->translations()->saveMany(PostTranslate::factory()->count(1)->make(['locale' => 'es']));

@@ -25,8 +25,16 @@ use App\Http\Controllers\ArtworkController;
 Route::get('/', function () {
 
     $info = Info::first();    
-    $artworks = Artwork::with(['translations', 'images', 'videos'])->get(); // Traer todos los artworks con sus traducciones e imágenes
-    $posts = Post::with(['translations', 'user'])->get();
+    $artworks = Artwork::with(['translations', 'images', 'videos'])
+                        ->orderBy('created_at', 'desc')
+                        ->take(15)
+                        ->get();
+
+    $posts = Post::with(['translations', 'user'])
+                        ->orderBy('created_at', 'desc') 
+                        ->take(9) 
+                        ->get();
+
     $users = User::whereHas('profile')->with(['profile.translates'])->get();
 
     return Inertia::render('Welcome', [
@@ -35,9 +43,9 @@ Route::get('/', function () {
         'posts' => $posts,
         'users' => $users,
         'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        // 'canRegister' => Route::has('register'),
+        // 'laravelVersion' => Application::VERSION,
+        // 'phpVersion' => PHP_VERSION,
     ]);
 });
 
