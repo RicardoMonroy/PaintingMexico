@@ -9,6 +9,8 @@ class SaleURL extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['store', 'url'];
+
     protected $table = 'sale_urls';
     protected $primaryKey = 'idsaleURLs';
 

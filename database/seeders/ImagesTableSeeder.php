@@ -21,7 +21,7 @@ class ImagesTableSeeder extends Seeder
             for ($i = 0; $i < 3; $i++) {
                 Image::create([
                     'artwork_id' => $artwork->id,
-                    'url' => 'https://via.placeholder.com/640x480.png/00ff77?text=artwork+' . $i, // Ejemplo de URL
+                    'url' => '/storage/artworks/ArtworDefaulg.png', // Ejemplo de URL
                 ]);
             }
         });

@@ -17,7 +17,7 @@ class InfoFactory extends Factory
     public function definition(): array
     {
         return [
-            'banner' => $this->faker->imageUrl(1200, 300, 'business'), // Genera una imagen de banner
+            'banner' => asset('storage/banners/DefaultBanner.png'), // Genera una imagen de banner
             'email' => 'contacto@paintingmexico.com', // Correo de contacto estático
         ];
     }

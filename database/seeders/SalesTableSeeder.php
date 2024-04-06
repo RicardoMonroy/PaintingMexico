@@ -14,7 +14,7 @@ class SalesTableSeeder extends Seeder
     public function run(): void
     {
         // Crear 10 ventas
-        Sale::factory()->count(10)->create()->each(function ($sale) {
+        Sale::factory()->count(1)->create()->each(function ($sale) {
             // Cada venta tiene 2 URLs
             $sale->saleURLs()->saveMany(\App\Models\SaleURL::factory()->count(2)->make());
 

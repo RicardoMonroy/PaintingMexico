@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import config from '@/config';
 import axios from 'axios';
 import DashboardLayout from '@/Layouts/DashboardLayout';
-import UserProfile from './UserProfile';
+import ViewUserProfile from './ViewUserProfile';
+import EditUserProfile from './EditUserProfile';
+
 import { useLanguage } from '@/contexts/LanguageContext';
 import en from '../translations/en.json';
 import es from '../translations/es.json';
@@ -11,6 +13,7 @@ const Usuarios = () => {
     const [users, setUsers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
     const [errors, setErrors] = useState({});
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [formData, setFormData] = useState({
@@ -23,34 +26,26 @@ const Usuarios = () => {
     const translations = language === 'en' ? en : es;
 
     useEffect(() => {
-        // Carga inicial de usuarios
         axios.get('/api/usuarios')
             .then(response => setUsers(response.data))
             .catch(error => console.error("Error al obtener los usuarios:", error));
     }, []);
 
-    const handleOpenModal = () => {
-        setIsModalOpen(true);
+    const handleOpenModal = () => setIsModalOpen(true);
+    const handleCloseModal = () => setIsModalOpen(false);
+    const handleViewClick = (userId) => {
+        setSelectedUserId(userId);
+        setIsProfileModalOpen(true);
+        setIsEditMode(false);
     };
-
-    const handleCloseModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const validateForm = () => {
-        let tempErrors = {};
-        tempErrors.name = formData.name ? "" : "El nombre es requerido.";
-        tempErrors.email = formData.email ? (/\S+@\S+\.\S+/.test(formData.email) ? "" : "El email no es válido.") : "El email es requerido.";
-        tempErrors.password = formData.password ? (formData.password.length >= 6 ? "" : "La contraseña debe tener al menos 6 caracteres.") : "La contraseña es requerida.";
-        tempErrors.role = formData.role ? "" : "El rol es requerido.";
-    
-        setErrors(tempErrors);
-        return Object.values(tempErrors).every(x => x === "");
-    };
-
     const handleEditClick = (userId) => {
         setSelectedUserId(userId);
-        setIsProfileModalOpen(true); // Abre el modal
+        setIsProfileModalOpen(true);
+        setIsEditMode(true);
+    };
+    const handleCloseEdit = () => {
+        setIsProfileModalOpen(false);
+        setIsEditMode(false);
     };
 
     const handleChange = (e) => {
@@ -84,6 +79,17 @@ const Usuarios = () => {
         }
     };
 
+    const validateForm = () => {
+        let tempErrors = {};
+        tempErrors.name = formData.name ? "" : "El nombre es requerido.";
+        tempErrors.email = formData.email ? (/\S+@\S+\.\S+/.test(formData.email) ? "" : "El email no es válido.") : "El email es requerido.";
+        tempErrors.password = formData.password ? (formData.password.length >= 6 ? "" : "La contraseña debe tener al menos 6 caracteres.") : "La contraseña es requerida.";
+        tempErrors.role = formData.role ? "" : "El rol es requerido.";
+    
+        setErrors(tempErrors);
+        return Object.values(tempErrors).every(x => x === "");
+    };
+
 
     return (
         <DashboardLayout>
@@ -110,13 +116,13 @@ const Usuarios = () => {
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {users.map((user) => (
                                     <tr key={user.id}>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.name}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <button className="text-primary hover:text-secondary mr-3" onClick={() => handleEditClick(user.id)}>{translations.editar}</button>
-                                            {/* Considera añadir otros botones o acciones aquí */}
-                                        </td>
-                                    </tr>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.name}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{user.email}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button className="text-primary hover:text-secondary mr-3" onClick={() => handleViewClick(user.id)}>{translations.ver}</button>
+                                        <button className="text-primary hover:text-secondary mr-3" onClick={() => handleEditClick(user.id)}>{translations.editar}</button>
+                                    </td>
+                                </tr>
                                 ))}
                             </tbody>
                         </table>
@@ -126,17 +132,16 @@ const Usuarios = () => {
                 )}
             </div>
 
-            {/* Modal para ver y editar el perfil */}
             {isProfileModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 overflow-y-auto h-full w-full z-50">
                     <div className="relative top-20 mx-auto p-5 border w-3/4 shadow-lg rounded-md bg-white">
                         <div className="flex justify-between items-center">
                             <h3 className="text-lg leading-6 font-medium text-primary">{translations.perfilUsuario}</h3>
-                            <button onClick={() => setIsProfileModalOpen(false)} className="text-primary">
+                            <button onClick={handleCloseEdit} className="text-primary">
                                 [Cerrar]
                             </button>
                         </div>
-                        <UserProfile userId={selectedUserId} />
+                        {isEditMode ? <EditUserProfile userId={selectedUserId} closeEditMode={handleCloseEdit} /> : <ViewUserProfile userId={selectedUserId} />}
                     </div>
                 </div>
             )}

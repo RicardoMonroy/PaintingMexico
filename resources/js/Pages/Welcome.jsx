@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import config from '@/config';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import en from '../translations/en.json';
@@ -16,6 +17,8 @@ export default function Welcome(props) {
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+    const [selectedSale, setSelectedSale] = useState(null);
+    const [isSaleModal, setIsSaleModal] = useState(false);
 
 
     const { language, setLanguage } = useLanguage();
@@ -63,6 +66,17 @@ export default function Welcome(props) {
     const closePostModal = () => {
         setSelectedPost(null);
         setIsPostModalOpen(false);
+    };
+
+    const openSaleProfileModal = (sale) => {
+        setSelectedSale(sale);
+        console.log(sale);
+        setIsSaleModal(true);
+    };
+
+    const closeSaleModal = () => {
+        setSelectedSale(null);
+        setIsSaleModal(false);
     };
 
     const changeLanguage = (lang) => {
@@ -120,6 +134,7 @@ export default function Welcome(props) {
                         <button onClick={() => scrollToSection('gallery')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.galeria}</button>
                         <button onClick={() => scrollToSection('blog')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.blog}</button>
                         <button onClick={() => scrollToSection('artists')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.artistas}</button>
+                        <button onClick={() => scrollToSection('sales')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.sales}</button>
                         <button onClick={() => scrollToSection('contact')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.contacto}</button>
                         <InertiaLink href="/login" className="bg-gray-100 text-primary border border-gray-300 rounded hover:border-secondary focus:outline-none focus:border-secondary px-4 py-2 lg:py-0">
                             {translations.iniciarSesion}
@@ -160,7 +175,7 @@ export default function Welcome(props) {
                                     <div key={artwork.id} className={`overflow-hidden ${spanClass}`}>
                                         <img
                                             className="w-full h-full object-cover rounded cursor-pointer"
-                                            src={artwork.front}
+                                            src={`${config.API_URL}${artwork.front}`}
                                             alt={artwork.translations[0]?.id || "Art image"}
                                             onClick={() => openArtworkModal(artwork)}
                                         />
@@ -173,8 +188,16 @@ export default function Welcome(props) {
                     )}
                 </div>
                 {selectedArtwork && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">                        
-                        <div className="bg-white p-5 rounded" style={{ width: '90%', maxWidth: '1280px', margin: '0 auto' }}>
+                    <div className="fixed inset-0 z-50 flex justify-center items-center">                        
+                        <div className="relative bg-white p-5 rounded w-full h-full overflow-auto" style={{ backgroundColor: `${selectedArtwork.background_color}` }}>
+                            {/* Botón para cerrar el modal en la esquina superior derecha */}
+                            <button
+                                className="absolute top-0 right-0 m-4 text-black"
+                                onClick={closeArtworkModal}
+                            >
+                                &times; {/* Representa una cruz */}
+                            </button>
+
                             <h3 className="text-2xl font-bold text-center">
                                 {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
                             </h3>
@@ -182,7 +205,7 @@ export default function Welcome(props) {
                             <Slider {...settings}>
                                 {selectedArtwork.images.map((image, index) => (
                                     <div key={index} onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
-                                        <img src={image.url} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
+                                        <img src={`${config.API_URL}${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
                                     </div>
                                 ))}
                             </Slider>
@@ -201,29 +224,45 @@ export default function Welcome(props) {
                             {/* Descripción y videos */}
                             <div className="flex">
                                 {/* Contenedor de texto */}
-                                <div className="flex-grow pr-4" style={{flexBasis: '75%'}}>
+                                <div className="flex-grow pr-4" style={{flexBasis: '60%'}}>
                                     <h3 className="text-2xl font-bold">
                                         {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
                                     </h3>
-                                    <p>
-                                        {selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible'}
-                                    </p>
+                                    <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
                                 </div>
 
                                 {/* Contenedor de videos */}
-                                <div className="flex-none" style={{flexBasis: '25%'}}>
-                                    {selectedArtwork.videos.map((video, index) => (
-                                        <video key={index} controls src={video.url} className="rounded mb-2 w-full">
-                                            Tu navegador no soporta la etiqueta de video.
-                                        </video>
-                                    ))}
+                                <div className="flex-none" style={{flexBasis: '40%'}}>
+                                    {selectedArtwork.videos.map((video, index) => {
+                                        // Extraer el ID del video de YouTube de la URL
+                                        const videoId = video.url.split('v=')[1].split('&')[0];
+
+                                        return (
+                                            <iframe
+                                                key={index}
+                                                width="100%"
+                                                height="315"
+                                                src={`https://www.youtube.com/embed/${videoId}`}
+                                                title="YouTube video player"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                                className="rounded mb-2"
+                                            ></iframe>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
-                            {/* Botón para cerrar el modal */}
-                            <button className="mt-4 px-4 py-2 bg-secondary text-white rounded" onClick={closeArtworkModal}>
-                                {translations.btnCerrar}
-                            </button>
+                            {/* Contenedor fijo en la parte inferior para el botón de cierre */}
+                            <div className="absolute bottom-0 right-0 m-4">
+                                <button
+                                    className="px-4 py-2 bg-secondary text-white rounded"
+                                    onClick={closeArtworkModal}
+                                >
+                                    {translations.btnCerrar}
+                                </button>
+                            </div>
                         </div>
                     </div>                   
                 )}
@@ -272,9 +311,11 @@ export default function Welcome(props) {
                             <h2 className="text-2xl font-bold">
                                 {selectedPost.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
                             </h2>
-                            <p className="mt-2">
-                                {selectedPost.translations.find(t => t.locale === language)?.content || 'Descripción no disponible'}
-                            </p>
+                            <div className="mt-2" dangerouslySetInnerHTML={{
+                                __html: selectedPost.translations.find(t => t.locale === language)?.content || 'Descripción no disponible'
+                            }}>
+                                {/* El contenido HTML se insertará aquí */}
+                            </div>
                             <p className="mt-4">Publicado por: {selectedPost.user.name}</p>
                             <p className="mt-1">Fecha de publicación: {new Date(selectedPost.created_at).toLocaleDateString(language)}</p>
                             <button onClick={closePostModal} className="mt-4 px-4 py-2 bg-secondary text-white rounded">
@@ -292,12 +333,13 @@ export default function Welcome(props) {
                     {props.users.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {props.users.filter(user => user.profile).map((user) => {
-                                const profileTranslation = user.profile.translates.find(t => t.locale === language);
+                                // Asegúrate de que 'translates' es un array antes de llamar a 'find'
+                                const profileTranslation = user.profile.translates?.find(t => t.locale === language);
                                 return (
                                     <div key={user.id} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" onClick={() => openProfileModal(user)}>
                                         <img
                                             className="w-full h-48 object-cover"
-                                            src={user.profile.avatar}
+                                            src={user.profile.avatar ? `${config.API_URL}${user.profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
                                             alt={profileTranslation?.title || 'Avatar'}
                                         />
                                         <div className="px-6 py-4">
@@ -313,31 +355,113 @@ export default function Welcome(props) {
                     ) : (
                         <p className="text-center">{translations.noInfoAvailable}</p>
                     )}
-                </div>
-                {isProfileModalOpen && selectedUser && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-                        <div className="bg-white p-5 rounded-lg max-w-3xl w-full overflow-y-auto" style={{ maxHeight: '80vh' }}>
-                            {selectedUser.profile.avatar && (
-                                <img
-                                    src={selectedUser.profile.avatar}
-                                    alt="Avatar"
-                                    className="mx-auto w-48 h-48 rounded-full mb-4"
-                                    style={{ maxWidth: '70%', height: 'auto' }}
-                                />
-                            )}
-                            <h2 className="text-2xl font-bold">
-                                {selectedUser.name}
-                            </h2>
-                            <p className="mt-2">
-                                {selectedUser.profile.translations.find(t => t.locale === language)?.description || 'Descripción no disponible'}
-                            </p>
-                            <button onClick={closeProfileModal} className="mt-4 px-4 py-2 bg-secondary text-white rounded">
-                                {translations.btnCerrar}
-                            </button>
+
+                    {isProfileModalOpen && selectedUser?.profile && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+                            <div className="bg-white p-5 rounded-lg max-w-3xl w-full overflow-y-auto" style={{ maxHeight: '80vh' }}>
+                                {selectedUser.profile.avatar && (
+                                    <img
+                                        src={selectedUser.profile.avatar ? `${config.API_URL}${selectedUser.profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
+                                        alt="Avatar"
+                                        className="mx-auto w-48 h-48 rounded-full mb-4"
+                                        style={{ maxWidth: '70%', height: 'auto' }}
+                                    />
+                                )}
+                                <h2 className="text-2xl font-bold">
+                                    {selectedUser.name}
+                                </h2>
+                                <div className="mt-2" dangerouslySetInnerHTML={{ __html: selectedUser.profile.translates?.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
+
+                                
+
+
+                                <button onClick={closeProfileModal} className="mt-4 px-4 py-2 bg-secondary text-white rounded">
+                                    {translations.btnCerrar}
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+
+                </div>                
             </div>
+
+            {/* Ventas */}
+            <div id="sales" className="py-20 bg-gray-100">
+                <h2 className="text-3xl font-bold text-center">{translations.sales}</h2><br />
+                <div className="container mx-auto px-4">
+                    {props.sales.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {props.sales.map((sale, index) => {
+                                // Asegúrate de que 'translates' es un array antes de llamar a 'find'
+                                const saleTranslation = sale.sale_translates.find(t => t.locale === language);
+                                return (
+                                    <div key={index} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" onClick={() => openSaleProfileModal(sale)}>
+                                        <img
+                                            className="w-full h-48 object-cover"
+                                            src={sale.cover ? `${config.API_URL}${sale.cover}` : '/storage/avatars/AvatarDefault.png'}
+                                            alt={saleTranslation?.title || 'Avatar'}
+                                        />
+                                        <div className="px-6 py-4">
+                                            <div className="font-bold text-xl mb-2">{sale.name}</div>
+                                            <p className="text-gray-700 text-base">
+                                                {saleTranslation?.title || 'Descripción no disponible'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <p className="text-center">{translations.noInfoAvailable}</p>
+                    )}
+
+                    {isSaleModal && selectedSale && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+                            <div className="bg-white p-5 rounded-lg max-w-3xl w-full overflow-y-auto" style={{ maxHeight: '80vh' }}>
+                                <img
+                                    src={`${config.API_URL}${selectedSale.cover}`}
+                                    alt="Sale Image"
+                                    className="mx-auto w-48 h-48 mb-4"
+                                    style={{ maxWidth: '80%', height: 'auto' }}
+                                />
+                                <h2 className="text-2xl font-bold">
+                                    {selectedSale.sale_translates.find(t => t.locale === language)?.title || 'No title available'}
+                                </h2>
+                                <p className="mt-2">
+                                    {selectedSale.sale_translates.find(t => t.locale === language)?.description || 'No description available'}
+                                </p>
+                                {/* Muestra las imágenes de la galería */}
+                                <div className="grid grid-cols-2 gap-4">
+                                    {selectedSale.sale_galleries.map((galleryItem) => (
+                                        <img
+                                            key={galleryItem.idsaleGallery}
+                                            src={`${config.API_URL}${galleryItem.url}`}   
+                                            alt="Gallery Image"
+                                            className="w-full h-auto rounded"
+                                        />
+                                    ))}
+                                </div>
+                                {/* Muestra las URLs asociadas a la venta */}
+                                <ul className="list-disc ml-4 mt-4">
+                                    {selectedSale.sale_u_r_ls.map((urlItem) => (
+                                        <li key={urlItem.idsaleURLs}>
+                                            <a href={urlItem.url} target="_blank" rel="noopener noreferrer">
+                                                {urlItem.store || 'Store'}: {urlItem.url}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <button onClick={closeSaleModal} className="mt-4 px-4 py-2 bg-secondary text-white rounded">
+                                    {translations.btnCerrar}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {/* TODO: terminar galerias */}
+
+                </div>                
+            </div>
+
 
             {/* Contacto */}
             <div id="contact" className="py-20 bg-gray-100">
@@ -354,6 +478,8 @@ export default function Welcome(props) {
                     )}
                 </div>                
             </div>
+
+            
 
         </div>
     );

@@ -9,6 +9,8 @@ class Sale extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['cover'];
+
     protected $table = 'sales';
     protected $primaryKey = 'idsales';
 

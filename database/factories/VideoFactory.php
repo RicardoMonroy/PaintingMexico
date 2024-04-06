@@ -17,7 +17,7 @@ class VideoFactory extends Factory
     public function definition(): array
     {
         return [
-            'url' => $this->faker->url, // Genera una URL aleatoria
+            'url' => 'https://www.youtube.com/watch?v=EjNe5EJ1cAQ', // Genera una URL aleatoria
             // 'artwork_id' se asignará al crear las instancias
         ];
     }

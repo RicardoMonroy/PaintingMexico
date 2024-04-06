@@ -18,7 +18,7 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'cover' => $this->faker->imageUrl(), // Usa $this->faker aquí
+            'cover' => '/storage/posts/PostDefault.png', // Usa $this->faker aquí
             'user_id' => function () {
                 return \App\Models\User::inRandomOrder()->first()->id;
             },

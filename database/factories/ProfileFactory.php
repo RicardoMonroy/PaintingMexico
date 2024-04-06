@@ -21,7 +21,7 @@ class ProfileFactory extends Factory
     public function definition(): array
     {
         return [
-            'avatar' => 'AvatarDefault.png', 
+            'avatar' => 'storage/avatars/AvatarDefault.png', 
             // 'user_id' se asignará al crear la instancia
         ];
     }

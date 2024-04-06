@@ -119,7 +119,7 @@ const UserProfile = ({ userId }) => {
                     <div className="flex">
                         <div className="w-1/4 p-4">
                             <img 
-                                src={profile && profile.avatar ? `${config.API_URL}/storage/${profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
+                                src={profile && profile.avatar ? '{profile.avatar}' : '/storage/avatars/AvatarDefault.png'}
                                 alt="Avatar" 
                                 className="w-full h-auto rounded-lg"
                             />
@@ -160,11 +160,10 @@ const UserProfile = ({ userId }) => {
                     <div className="flex justify-center items-start w-full">
                         <div className="w-1/4 p-4">
                         <img 
-                            src={profile && profile.avatar ? `${config.API_URL}/storage/${profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
+                            src={profile.avatar || '/storage/avatars/AvatarDefault.png'}
                             alt="Avatar" 
                             className="w-full h-auto rounded-lg"
                         />
-                            
                         </div>
                         <div className="w-3/4 p-4 flex flex-col justify-between">
                             <div>

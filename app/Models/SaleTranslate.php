@@ -9,6 +9,8 @@ class SaleTranslate extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['locale', 'title', 'description'];
+
     protected $table = 'sale_translates';
     protected $primaryKey = 'idsaleTranslates';
 

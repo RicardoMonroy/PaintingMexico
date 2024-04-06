@@ -1,12 +1,16 @@
 {
     "galeria": "Galería",
     "blog": "Blog",
+    "artwork": "Obras de arte",
     "artistas": "Artistas",
+    "sales": "Obras en venta",
     "contacto": "Contacto",
     "iniciarSesion": "Iniciar Sesión",
     "welcome": "Bienvenido al Dashboard",
     "dashboard": "Tablero",
     "configuracion": "Configuración",
+    "snapshot": "Foto",
+    "titulo": "Título",
     "usuarios": "Usuarios",
     "posts": "Posts de Blog",
     "ventas": "Ventas",
@@ -21,7 +25,9 @@
     "email": "Correo Electrónico",
     "password": "Contraseña",
     "acciones": "Acciones",
+    "ver": "Ver",
     "editar": "Editar",
+    "eliminar": "Eliminar",
     "elegirRol": "Seleccione un rol",
     "perfilUsuario": "Perfil del Usuario",
     "btnAceptar": "Aceptar",
@@ -30,5 +36,8 @@
     "noInfoAvailable": "No hay contenido disponible",
     "descripcionEspanol": "Descripción en Español",
     "descripcionIngles": "Descripción en Inglés",
-    "loadingProfile": "Cargando Perfil"
+    "loadingProfile": "Cargando Perfil",
+    "noPerfil": "Este usuario no tiene perfil, crea su perfil.",
+    "confirmDelete": "Confirmación de eliminación",
+    "confirmDeleteText": "Al eliminar este elemento ya no podra ser recuperado, ¿estas seguro de eliminarlo?"
 }

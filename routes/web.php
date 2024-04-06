@@ -9,6 +9,7 @@ use App\Models\Artwork;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Profile;
+use App\Models\Sale;
 use App\Http\Controllers\ArtworkController;
 
 /*
@@ -35,12 +36,17 @@ Route::get('/', function () {
                         ->take(9) 
                         ->get();
 
+    $sales = Sale::with(['saleURLs', 'saleTranslates', 'saleGalleries'])
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
     $users = User::whereHas('profile')->with(['profile.translates'])->get();
 
     return Inertia::render('Welcome', [
         'info' => $info,
         'artworks' => $artworks, // Pasar obras de arte a la vista
         'posts' => $posts,
+        'sales' => $sales,
         'users' => $users,
         'canLogin' => Route::has('login'),
         // 'canRegister' => Route::has('register'),
@@ -62,6 +68,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/usuarios', function() {
         return Inertia::render('Usuarios');
     })->name('usuarios');
+
+    Route::get('/posts', function() {
+        return Inertia::render('Posts');
+    })->name('posts');
+
+    Route::get('/artworks', function() {
+        return Inertia::render('Artworks');
+    })->name('artworks');
+
+    Route::get('/sales', function() {
+        return Inertia::render('Sales');
+    })->name('sales');
+
+    Route::get('/info', function() {
+        return Inertia::render('Info');
+    })->name('info');
 
     
     Route::post('/logout', function () {

@@ -18,7 +18,7 @@ class SaleGalleryFactory extends Factory
     public function definition(): array
     {
         return [
-            'url' => $this->faker->imageUrl(640, 480, 'business'), // Ejemplo de URL
+            'url' => '/storage/sales/Sale.png', // Ejemplo de URL
             // 'sales_idsales' se asignará al crear las instancias
         ];
     }

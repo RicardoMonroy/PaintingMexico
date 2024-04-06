@@ -14,7 +14,7 @@ class InfoTableSeeder extends Seeder
     public function run(): void
     {
         Info::create([
-            'banner' => 'https://via.placeholder.com/1200x300.png/009900?text=PaintingMexico+Banner', // Ejemplo de URL de banner
+            'banner' => 'storage/banners/DefaultBanner.png', // Ejemplo de URL de banner
             'email' => 'contacto@paintingmexico.com',
         ]);
     }

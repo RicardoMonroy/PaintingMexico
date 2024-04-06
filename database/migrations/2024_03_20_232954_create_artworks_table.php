@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('artworks', function (Blueprint $table) {
             $table->id();
             $table->string('front');
+            $table->string('background_color')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 

@@ -1,12 +1,16 @@
 {
     "galeria": "Gallery",
     "blog": "Blog",
+    "artwork": "Artworks",
     "artistas": "Artists",
+    "sales": "Sales",
     "contacto": "Contact",
     "iniciarSesion": "Log in",
     "welcome": "Welcome to Dashboard",
     "dashboard": "Dashboard",
     "configuracion": "Settings",
+    "snapshot": "Snapshot",
+    "titulo": "Title",
     "usuarios": "Users",
     "posts": "Blog Posts",
     "ventas": "Sales",
@@ -21,7 +25,9 @@
     "email": "Email",
     "password": "Password",
     "acciones": "Actions",
+    "ver": "View",
     "editar": "Edit",
+    "eliminar": "Remove",
     "elegirRol": "Select a role",
     "perfilUsuario": "User Profile",
     "btnAceptar": "Accept",
@@ -30,5 +36,8 @@
     "noInfoAvailable": "No hay contenido disponible",
     "descripcionEspanol": "Description in spanish",
     "descripcionIngles": "Description in english",
-    "loadingProfile": "Loading Profile"
+    "loadingProfile": "Loading Profile",
+    "noPerfil": "This user does not have a profile, create your profile.",
+    "confirmDelete": "Deletion confirmation",
+    "confirmDeleteText": "By deleting this element it can no longer be recovered, are you sure to delete it?"
 }

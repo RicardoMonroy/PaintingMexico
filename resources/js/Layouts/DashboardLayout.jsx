@@ -22,16 +22,16 @@ const DashboardLayout = ({ children }) => {
     return (
         <div className="flex h-screen">
             {/* Barra lateral */}
-            <div className="w-64 bg-primary text-secondary p-5">
+            <div className="sticky top-0 w-64 bg-primary text-secondary p-5">
                 <InertiaLink href="/dashboard" className="block py-2">
                     <h1 className="text-xl mb-4">{translations.dashboard}</h1>
                 </InertiaLink>
                 <ul>
-                    <li>
+                    {/* <li>
                         <InertiaLink href="/configuracion" className="block py-2 text-button hover:bg-tertiary">
                             {translations.configuracion}
                         </InertiaLink>
-                    </li>
+                    </li> */}
                     <li>
                         <InertiaLink href="/usuarios" className="block py-2 text-button hover:bg-tertiary">
                             {translations.usuarios}
@@ -43,12 +43,17 @@ const DashboardLayout = ({ children }) => {
                         </InertiaLink>
                     </li>
                     <li>
-                        <InertiaLink href="/ventas" className="block py-2 text-button hover:bg-tertiary">
+                        <InertiaLink href="/artworks" className="block py-2 text-button hover:bg-tertiary">
+                            {translations.artwork}
+                        </InertiaLink>
+                    </li>
+                    <li>
+                        <InertiaLink href="/sales" className="block py-2 text-button hover:bg-tertiary">
                             {translations.ventas}
                         </InertiaLink>
                     </li>
                     <li>
-                        <InertiaLink href="/informacion" className="block py-2 text-button hover:bg-tertiary">
+                        <InertiaLink href="/info" className="block py-2 text-button hover:bg-tertiary">
                             {translations.informacion}
                         </InertiaLink>
                     </li>

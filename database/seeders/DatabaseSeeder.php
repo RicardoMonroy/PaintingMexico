@@ -27,17 +27,17 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
         ]);
 
-        \App\Models\User::factory()->count(5)->create();
+        // \App\Models\User::factory()->count(5)->create();
 
         $this->call([
-            PostsTableSeeder::class,
-            ArtworksTableSeeder::class,
-            ImagesTableSeeder::class,
-            VideosTableSeeder::class,
-            ProfilesTableSeeder::class,
-            ProfileTranslatesTableSeeder::class,
-            SalesTableSeeder::class,
-            SaleGalleriesTableSeeder::class,
+            // PostsTableSeeder::class,
+            // ArtworksTableSeeder::class,
+            // ImagesTableSeeder::class,
+            // VideosTableSeeder::class,
+            // ProfilesTableSeeder::class,
+            // ProfileTranslatesTableSeeder::class,
+            // SalesTableSeeder::class,
+            // SaleGalleriesTableSeeder::class,
             InfoTableSeeder::class,
         ]);
 

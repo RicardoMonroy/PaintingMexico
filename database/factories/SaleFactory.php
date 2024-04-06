@@ -17,7 +17,7 @@ class SaleFactory extends Factory
     public function definition(): array
     {
         return [
-            'cover' => $this->faker->imageUrl(),
+            'cover' => '/storage/sales/Sale.png',
         ];
     }
 }

@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Profile;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 
 class ProfileController extends Controller
@@ -51,8 +52,8 @@ class ProfileController extends Controller
         ]);
 
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $profile->avatar = $avatarPath;
+            $avatarPath = $request->file('avatar')->store('public/avatars');
+            $profile->avatar = Storage::url($avatarPath);
         } else {
             // Si no hay archivo cargado, establecer avatar como null o un valor predeterminado
             $profile->avatar = null;
@@ -80,37 +81,46 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(Request $request, Profile $profile)
+    public function update(Request $request, $userId)
     {
         Log::info('Update request data:', $request->all());
 
-        $request->validate([
+        // Validación de los datos recibidos
+        $validated = $request->validate([
             'avatar' => 'sometimes|image|mimes:jpg,jpeg,png',
             'description_en' => 'required|string',
             'description_es' => 'required|string',
         ]);
 
+        // Buscar el perfil del usuario por userId o crear uno nuevo
+        $profile = Profile::updateOrCreate(
+            ['user_id' => $userId],
+            ['avatar' => $request->hasFile('avatar') ? Storage::url($request->file('avatar')->store('public/avatars')) : null]
+        );
+
+        // Si hay un archivo de avatar, actualizarlo
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars', 'public');
-            $profile->avatar = $avatarPath;
+            $avatarPath = $request->file('avatar')->store('public/avatars');
+            $profile->avatar = Storage::url($avatarPath);
+            $profile->save();
         }
 
-        $profile->save();
-
+        // Actualizar o crear las traducciones para 'en' y 'es'
         $profile->translates()->updateOrCreate(
             ['locale' => 'en'],
-            ['description' => $request->input('description_en')]
+            ['description' => $validated['description_en']]
         );
         $profile->translates()->updateOrCreate(
             ['locale' => 'es'],
-            ['description' => $request->input('description_es')]
+            ['description' => $validated['description_es']]
         );
 
         // Log the updated profile data
         Log::info('Updated profile data:', $profile->fresh()->toArray());
 
-        return response()->json($profile->load('translates'));
+        return response()->json($profile->load('translates'), 201);
     }
+
 
     /**
      * Delete the user's account.
