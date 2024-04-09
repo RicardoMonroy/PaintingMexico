@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
+import Plx from 'react-plx';
+import 'animate.css';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import config from '@/config';
@@ -20,9 +24,34 @@ export default function Welcome(props) {
     const [selectedSale, setSelectedSale] = useState(null);
     const [isSaleModal, setIsSaleModal] = useState(false);
 
-
     const { language, setLanguage } = useLanguage();
     const translations = language === 'en' ? en : es;
+
+    const plxData = [
+        {
+          start: 0,          // Cuando el elemento está en la parte superior de la ventana
+          end: 800,          // Finaliza la animación 500px después
+          properties: [
+            {
+              startValue: 0, // Comienza con una opacidad de 0 (completamente invisible)
+              endValue: 1,   // Termina con una opacidad de 1 (completamente visible)
+              property: "opacity"
+            },
+            {
+              startValue: 100, // Empieza 100px abajo
+              endValue: 0,     // Mueve el elemento a su posición original
+              property: "translateY"
+            }
+          ]
+        }
+    ];
+      
+    useEffect(() => {
+        AOS.init({
+            duration: 1200, // Duración de la animación
+            once: false, // Para que la animación se ejecute solo una vez por elemento
+        });
+    }, []);
 
     const settings = {
         dots: true,
@@ -88,6 +117,7 @@ export default function Welcome(props) {
 
     const openProfileModal = (user) => {
         setSelectedUser(user);
+        console.log(user.profile);
         setIsProfileModalOpen(true);
     };
     
@@ -151,9 +181,8 @@ export default function Welcome(props) {
                 </div>
             </nav>
 
-
             {/* Sección de Bienvenida */}
-            <div className="text-center py-10">
+            <div className="text-center py-10 animate__animated animate__zoomIn">
                 {props.info ? (
                     <div>
                         <img src={props.info.banner} alt="Banner" className="w-full h-auto mx-auto" />
@@ -163,113 +192,115 @@ export default function Welcome(props) {
                 )}
             </div>
 
-            {/* Galería */}
-            <div id="gallery" className="py-20 bg-gray-100">
-                <h2 className="text-3xl font-bold text-center">{translations.galeria}</h2><br />
-                <div className="container mx-auto px-4">
-                    {props.artworks.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                            {props.artworks.map((artwork, index) => {
-                                const spanClass = index % 5 === 0 ? 'row-span-2 col-span-2' : '';
-                                return (
-                                    <div key={artwork.id} className={`overflow-hidden ${spanClass}`}>
-                                        <img
-                                            className="w-full h-full object-cover rounded cursor-pointer"
-                                            src={`${config.API_URL}${artwork.front}`}
-                                            alt={artwork.translations[0]?.id || "Art image"}
-                                            onClick={() => openArtworkModal(artwork)}
-                                        />
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <p className="text-center">{translations.noInfoAvailable}</p>
-                    )}
-                </div>
-                {selectedArtwork && (
-                    <div className="fixed inset-0 z-50 flex justify-center items-center">                        
-                        <div className="relative bg-white p-5 rounded w-full h-full overflow-auto" style={{ backgroundColor: `${selectedArtwork.background_color}` }}>
-                            {/* Botón para cerrar el modal en la esquina superior derecha */}
-                            <button
-                                className="absolute top-0 right-0 m-4 text-black"
-                                onClick={closeArtworkModal}
-                            >
-                                &times; {/* Representa una cruz */}
-                            </button>
-
-                            <h3 className="text-2xl font-bold text-center">
-                                {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
-                            </h3>
-                            {/* Muestra todas las imágenes */}
-                            <Slider {...settings}>
-                                {selectedArtwork.images.map((image, index) => (
-                                    <div key={index} onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
-                                        <img src={`${config.API_URL}${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
-                                    </div>
-                                ))}
-                            </Slider>
-                            {/* Modal de las imágenes */}
-                            {isImageModalOpen && (
-                                <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
-                                    <div className="bg-white p-5 rounded-lg">
-                                        <img src={selectedImage.url} alt="Imagen ampliada" className="rounded mb-4 w-auto max-h-[80vh] max-w-[90vw]" />
-                                        <button className="px-4 py-2 bg-secondary text-white rounded" onClick={() => setIsImageModalOpen(false)}>
-                                        {translations.btnCerrar}
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Descripción y videos */}
-                            <div className="flex">
-                                {/* Contenedor de texto */}
-                                <div className="flex-grow pr-4" style={{flexBasis: '60%'}}>
-                                    <h3 className="text-2xl font-bold">
-                                        {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
-                                    </h3>
-                                    <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
-                                </div>
-
-                                {/* Contenedor de videos */}
-                                <div className="flex-none" style={{flexBasis: '40%'}}>
-                                    {selectedArtwork.videos.map((video, index) => {
-                                        // Extraer el ID del video de YouTube de la URL
-                                        const videoId = video.url.split('v=')[1].split('&')[0];
-
-                                        return (
-                                            <iframe
-                                                key={index}
-                                                width="100%"
-                                                height="315"
-                                                src={`https://www.youtube.com/embed/${videoId}`}
-                                                title="YouTube video player"
-                                                frameBorder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                                className="rounded mb-2"
-                                            ></iframe>
-                                        );
-                                    })}
-                                </div>
+            <Plx className="Your-custom-class" parallaxData={plxData}>
+                {/* Galería */}
+                <div id="gallery" className="py-20 bg-gray-100" data-aos="fade-up">
+                    <h2 className="text-3xl font-bold text-center">{translations.galeria}</h2><br />
+                    <div className="container mx-auto px-4">
+                        {props.artworks.length > 0 ? (
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                {props.artworks.map((artwork, index) => {
+                                    const spanClass = index % 5 === 0 ? 'row-span-2 col-span-2' : '';
+                                    return (
+                                        <div key={artwork.id} className={`overflow-hidden ${spanClass}`} data-aos="zoom-in">
+                                            <img
+                                                className="w-full h-full object-cover rounded cursor-pointer"
+                                                src={`${config.API_URL}${artwork.front}`}
+                                                alt={artwork.translations[0]?.id || "Art image"}
+                                                onClick={() => openArtworkModal(artwork)}
+                                            />
+                                        </div>
+                                    );
+                                })}
                             </div>
-
-                            {/* Contenedor fijo en la parte inferior para el botón de cierre */}
-                            <div className="absolute bottom-0 right-0 m-4">
+                        ) : (
+                            <p className="text-center">{translations.noInfoAvailable}</p>
+                        )}
+                    </div>
+                    {selectedArtwork && (
+                        <div className="fixed inset-0 z-50 flex justify-center items-center">                        
+                            <div className="relative bg-white p-5 rounded w-full h-full overflow-auto" style={{ backgroundColor: `${selectedArtwork.background_color}` }}>
+                                {/* Botón para cerrar el modal en la esquina superior derecha */}
                                 <button
-                                    className="px-4 py-2 bg-secondary text-white rounded"
+                                    className="absolute top-0 right-0 m-4 text-black"
                                     onClick={closeArtworkModal}
                                 >
-                                    {translations.btnCerrar}
+                                    &times; {/* Representa una cruz */}
                                 </button>
+
+                                <h3 className="text-2xl font-bold text-center">
+                                    {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
+                                </h3>
+                                {/* Muestra todas las imágenes */}
+                                <Slider {...settings}>
+                                    {selectedArtwork.images.map((image, index) => (
+                                        <div key={index} onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
+                                            <img src={`${config.API_URL}${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
+                                        </div>
+                                    ))}
+                                </Slider>
+                                {/* Modal de las imágenes */}
+                                {isImageModalOpen && (
+                                    <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
+                                        <div className="bg-white p-5 rounded-lg">
+                                            <img src={selectedImage.url} alt="Imagen ampliada" className="rounded mb-4 w-auto max-h-[80vh] max-w-[90vw]" />
+                                            <button className="px-4 py-2 bg-secondary text-white rounded" onClick={() => setIsImageModalOpen(false)}>
+                                            {translations.btnCerrar}
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Descripción y videos */}
+                                <div className="flex">
+                                    {/* Contenedor de texto */}
+                                    <div className="flex-grow pr-4" style={{flexBasis: '60%'}}>
+                                        <h3 className="text-2xl font-bold">
+                                            {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
+                                        </h3>
+                                        <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
+                                    </div>
+
+                                    {/* Contenedor de videos */}
+                                    <div className="flex-none" style={{flexBasis: '40%'}}>
+                                        {selectedArtwork.videos.map((video, index) => {
+                                            // Extraer el ID del video de YouTube de la URL
+                                            const videoId = video.url.split('v=')[1].split('&')[0];
+
+                                            return (
+                                                <iframe
+                                                    key={index}
+                                                    width="100%"
+                                                    height="315"
+                                                    src={`https://www.youtube.com/embed/${videoId}`}
+                                                    title="YouTube video player"
+                                                    frameBorder="0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
+                                                    className="rounded mb-2"
+                                                ></iframe>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* Contenedor fijo en la parte inferior para el botón de cierre */}
+                                <div className="absolute bottom-0 right-0 m-4">
+                                    <button
+                                        className="px-4 py-2 bg-secondary text-white rounded"
+                                        onClick={closeArtworkModal}
+                                    >
+                                        {translations.btnCerrar}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </div>                   
-                )}
-            </div>
+                        </div>                   
+                    )}
+                </div>
+            </Plx>
 
             {/* Blog */}
-            <div id="blog" className="py-20 bg-gray-100">
+            <div id="blog" className="py-20 bg-gray-100" data-aos="fade-up" >
                 <h2 className="text-3xl font-bold text-center">{translations.blog}</h2><br />
                 <div className="container mx-auto px-4">
                     {props.posts.length > 0 ? (
@@ -277,7 +308,7 @@ export default function Welcome(props) {
                             {props.posts.map((post) => {
                                 const postTranslation = post.translations.find(t => t.locale === language);
                                 return (
-                                    <div key={post.id} className="overflow-hidden rounded-lg shadow-lg" onClick={() => openPostModal(post)}>
+                                    <div key={post.id} className="overflow-hidden rounded-lg shadow-lg" data-aos="zoom-in" onClick={() => openPostModal(post)}>
                                         <img
                                             className="w-full h-48 object-cover"
                                             src={post.cover}
@@ -327,7 +358,7 @@ export default function Welcome(props) {
             </div>            
 
             {/* Artistas */}
-            <div id="artists" className="py-20 bg-gray-100">
+            <div id="artists" className="py-20 bg-gray-100" data-aos="fade-up">
                 <h2 className="text-3xl font-bold text-center">{translations.artistas}</h2><br />
                 <div className="container mx-auto px-4">
                     {props.users.length > 0 ? (
@@ -336,7 +367,7 @@ export default function Welcome(props) {
                                 // Asegúrate de que 'translates' es un array antes de llamar a 'find'
                                 const profileTranslation = user.profile.translates?.find(t => t.locale === language);
                                 return (
-                                    <div key={user.id} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" onClick={() => openProfileModal(user)}>
+                                    <div key={user.id} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" data-aos="zoom-in" onClick={() => openProfileModal(user)}>
                                         <img
                                             className="w-full h-48 object-cover"
                                             src={user.profile.avatar ? `${config.API_URL}${user.profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
@@ -344,9 +375,8 @@ export default function Welcome(props) {
                                         />
                                         <div className="px-6 py-4">
                                             <div className="font-bold text-xl mb-2">{user.name}</div>
-                                            <p className="text-gray-700 text-base">
-                                                {profileTranslation?.description || 'Descripción no disponible'}
-                                            </p>
+                                            {/* Aquí utilizamos dangerouslySetInnerHTML para renderizar el HTML */}
+                                            <p className="text-gray-700 text-base" dangerouslySetInnerHTML={{ __html: profileTranslation?.description || 'Descripción no disponible' }}></p>
                                         </div>
                                     </div>
                                 );
@@ -370,23 +400,23 @@ export default function Welcome(props) {
                                 <h2 className="text-2xl font-bold">
                                     {selectedUser.name}
                                 </h2>
-                                <div className="mt-2" dangerouslySetInnerHTML={{ __html: selectedUser.profile.translates?.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
-
-                                
-
-
+                                <p className="mt-2"
+                                    dangerouslySetInnerHTML={{ 
+                                        __html: selectedUser.profile.translates?.find(t => t.locale === language)?.description || 'Descripción no disponible' 
+                                    }}
+                                >
+                                </p>
                                 <button onClick={closeProfileModal} className="mt-4 px-4 py-2 bg-secondary text-white rounded">
                                     {translations.btnCerrar}
                                 </button>
                             </div>
                         </div>
                     )}
-
                 </div>                
             </div>
 
             {/* Ventas */}
-            <div id="sales" className="py-20 bg-gray-100">
+            <div id="sales" className="py-20 bg-gray-100" data-aos="fade-up">
                 <h2 className="text-3xl font-bold text-center">{translations.sales}</h2><br />
                 <div className="container mx-auto px-4">
                     {props.sales.length > 0 ? (
@@ -395,7 +425,7 @@ export default function Welcome(props) {
                                 // Asegúrate de que 'translates' es un array antes de llamar a 'find'
                                 const saleTranslation = sale.sale_translates.find(t => t.locale === language);
                                 return (
-                                    <div key={index} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" onClick={() => openSaleProfileModal(sale)}>
+                                    <div key={index} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" data-aos="zoom-in" onClick={() => openSaleProfileModal(sale)}>
                                         <img
                                             className="w-full h-48 object-cover"
                                             src={sale.cover ? `${config.API_URL}${sale.cover}` : '/storage/avatars/AvatarDefault.png'}
@@ -464,7 +494,7 @@ export default function Welcome(props) {
 
 
             {/* Contacto */}
-            <div id="contact" className="py-20 bg-gray-100">
+            <div id="contact" className="py-20 bg-gray-100" data-aos="fade-up">
                 <h2 className="text-3xl font-bold text-center">{translations.contacto}</h2>
                 <div className="mt-8 text-center">
                     {props.info ? (                            
