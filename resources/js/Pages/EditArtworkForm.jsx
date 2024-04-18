@@ -12,6 +12,8 @@ function EditArtworkForm({ artworkId, closeModal }) {
             es: { title: '', description: '' },
         },
         images: [],
+        existingImages: [], // Imágenes cargadas inicialmente del servidor
+        newImages: [], // Nuevas imágenes añadidas por el usuario
         videos: [],
     });
     
@@ -32,6 +34,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                     }, {}),
                     images: artwork.images.map(img => img.url), // Asegúrate de usar el campo correcto
                     videos: artwork.videos.map(video => video.url), // Asegúrate de usar el campo correcto
+                    existingImages: artwork.images || [] // Asegúrate de que siempre asignes un arreglo
                 });
             } catch (error) {
                 console.error('Error fetching artwork data:', error);
@@ -44,6 +47,24 @@ function EditArtworkForm({ artworkId, closeModal }) {
     const handleFileChange = (e) => {
         setArtworkData({ ...artworkData, front: e.target.files[0] });
     };
+
+    const handleAddImage = (event) => {
+        if (event.target.files && event.target.files.length > 0) {
+            const fileArray = Array.from(event.target.files);
+            const updatedNewImages = artworkData.newImages ? [...artworkData.newImages, ...fileArray] : [...fileArray];
+            setArtworkData({ ...artworkData, newImages: updatedNewImages });
+        } else {
+            console.error("No files selected or files are not accessible");
+        }
+    };    
+
+    const handleRemoveImage = (index) => {
+        console.log('Index to remove:', index);
+        // console.log('Current images:', artworkData.existingImages);    
+        const updatedExistingImages = artworkData.existingImages.filter((_, idx) => idx !== index);    
+        // console.log('Updated images:', updatedExistingImages);
+        setArtworkData({ ...artworkData, existingImages: updatedExistingImages });
+    };    
 
     const handleTranslationChange = (language, field, value) => {
         setArtworkData({
@@ -97,16 +118,30 @@ function EditArtworkForm({ artworkId, closeModal }) {
         // Si estás actualizando una imagen o un archivo, asegúrate de añadirlo solo si el usuario seleccionó un nuevo archivo
         if (artworkData.front instanceof File) {
             formData.append('front', artworkData.front);
+            console.log("Las imágenes son:", artworkData.front);
+        }
+
+        // Agregar imágenes existentes que se mantienen
+        if (artworkData.existingImages && artworkData.existingImages.length > 0) {
+            artworkData.existingImages.forEach((image, index) => {
+                formData.append(`existingImages[${index}]`, image.id.toString()); // Asegúrate de usar image.id
+                console.log('Se añaden al FormData los IDs de las imágenes:', image.id);
+            });
         }
         
-        artworkData.images.forEach((image, index) => {
-            if (image instanceof File) {
-                formData.append(`images[${index}]`, image);
-            }
-        });
+
+        // Agregar nuevas imágenes
+        if (artworkData.newImages && artworkData.newImages.length > 0) {
+            artworkData.newImages.forEach((image, index) => {
+                formData.append(`newImages[${index}]`, image);
+            });
+            console.log('New Images:', artworkData.newImages);
+        }        
         
+        // Para los videos
         artworkData.videos.forEach((video, index) => {
             formData.append(`videos[${index}]`, video);
+            console.log("Los videos son:", video);
         });
         
         Object.keys(artworkData.translations).forEach(locale => {
@@ -142,7 +177,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         Front Image
                     </label>
                     <div className="mb-4">
-                        <img src={artworkData.front} alt="Front" className="h-10 w-10 object-cover" />
+                        <img src={artworkData.front} alt="Front" className="-full h-auto object-cover rounded-lg shadow-md" />
                     </div>
                     <input
                         type="file"
@@ -151,13 +186,26 @@ function EditArtworkForm({ artworkId, closeModal }) {
                     />
 
                     <label className="block text-primary font-bold mb-2">Images</label>
-                    <input
-                        type="file"
-                        multiple
-                        onChange={(e) => handleFileChange(e, 'images')}
-                        className="w-full p-2 border rounded shadow-sm"
-                    />
-                </div>
+                    <div className="mb-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            {artworkData.existingImages.map((img, index) => (
+                                <div key={img.id || `image-${index}`} className="inline-block relative">
+                                    <img src={img.url} alt={`Image ${index}`} className="w-full h-auto object-cover rounded-lg shadow-md" />
+                                    <button type="button" onClick={() => handleRemoveImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                                        X
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        <br />
+                        <input
+                            type="file"
+                            multiple
+                            onChange={handleAddImage}
+                            className="w-full p-2 border rounded shadow-sm"
+                        />
+                    </div>
+                </div>                
 
                 <div>
                     <label className="block text-primary font-bold mb-2">

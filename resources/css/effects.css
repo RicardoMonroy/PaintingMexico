@@ -1,0 +1,40 @@
+/* Aumenta el tamaño de los botones de navegación */
+.slick-prev,
+.slick-next {
+    height: 50px;
+    width: 50px;
+    z-index: 1;
+}
+
+/* Aumenta el tamaño de los puntos del carrusel */
+.slick-dots li button:before {
+    font-size: 20px;
+}
+
+/* Añade espacio entre las imágenes */
+.slick-slide {
+    margin: 0 15px;
+}
+
+/* Personaliza el color y tamaño de la flecha (si es necesario) */
+.slick-prev:before,
+.slick-next:before {
+    color: black;
+    font-size: 50px;
+}
+
+.iframe-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    padding-top: 25.25%; /* Proporciona la altura basada en el ancho para mantener un aspecto adecuado */
+}
+
+iframe {
+    position: absolute;
+    width: 80%; /* 80% del ancho de la página */
+    height: 80vh; /* 80% de la altura de la ventana del navegador */
+    border: none;
+}

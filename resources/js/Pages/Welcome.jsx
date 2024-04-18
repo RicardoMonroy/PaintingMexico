@@ -3,6 +3,7 @@ import Slider from 'react-slick';
 import Plx from 'react-plx';
 import 'animate.css';
 import AOS from 'aos';
+import '../../css/effects.css';
 import 'aos/dist/aos.css';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -58,7 +59,9 @@ export default function Welcome(props) {
         infinite: true,
         speed: 500,
         slidesToShow: 3, // Muestra 3 slides a la vez
-        slidesToScroll: 3, // Desplaza 3 slides a la vez
+        slidesToScroll: 1, // Desplaza 3 slides a la vez
+        centerMode: true, // Añade esto para centrar slides y mostrar espacio a los lados
+        centerPadding: '20px', // Añade esto para más espacio alrededor de los slides
         responsive: [
             {
                 breakpoint: 1024, // En dispositivos de menos de 1024px
@@ -192,23 +195,26 @@ export default function Welcome(props) {
                 )}
             </div>
 
+            {/* Galería */}
             <Plx className="Your-custom-class" parallaxData={plxData}>
-                {/* Galería */}
                 <div id="gallery" className="py-20 bg-gray-100" data-aos="fade-up">
-                    <h2 className="text-3xl font-bold text-center">{translations.galeria}</h2><br />
+                    {/* <h2 className="text-3xl font-bold text-center">{translations.galeria}</h2><br /> */}
                     <div className="container mx-auto px-4">
                         {props.artworks.length > 0 ? (
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                                 {props.artworks.map((artwork, index) => {
                                     const spanClass = index % 5 === 0 ? 'row-span-2 col-span-2' : '';
                                     return (
-                                        <div key={artwork.id} className={`overflow-hidden ${spanClass}`} data-aos="zoom-in">
+                                        <div key={artwork.id} className={`relative overflow-hidden ${spanClass}`} data-aos="zoom-in" onClick={() => openArtworkModal(artwork)}>
                                             <img
                                                 className="w-full h-full object-cover rounded cursor-pointer"
                                                 src={`${config.API_URL}${artwork.front}`}
                                                 alt={artwork.translations[0]?.id || "Art image"}
                                                 onClick={() => openArtworkModal(artwork)}
                                             />
+                                            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 flex justify-center items-center transition-opacity duration-300">
+                                                <span className="text-white text-center px-4">{artwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}</span>
+                                            </div>
                                         </div>
                                     );
                                 })}
@@ -216,93 +222,88 @@ export default function Welcome(props) {
                         ) : (
                             <p className="text-center">{translations.noInfoAvailable}</p>
                         )}
-                    </div>
-                    {selectedArtwork && (
-                        <div className="fixed inset-0 z-50 flex justify-center items-center">                        
-                            <div className="relative bg-white p-5 rounded w-full h-full overflow-auto" style={{ backgroundColor: `${selectedArtwork.background_color}` }}>
-                                {/* Botón para cerrar el modal en la esquina superior derecha */}
-                                <button
-                                    className="absolute top-0 right-0 m-4 text-black"
-                                    onClick={closeArtworkModal}
-                                >
-                                    &times; {/* Representa una cruz */}
-                                </button>
+                    </div>                                        
+                </div>
+            </Plx>
+            {selectedArtwork && (
+                <div className="fixed inset-0 z-50 flex justify-center items-center">
+                    <div className="relative bg-white p-5 rounded overflow-auto" style={{ width: '100vw', height: '100vh', backgroundColor: `${selectedArtwork.background_color}` }}>
+                        {/* Botón para cerrar el modal en la esquina superior derecha */}
+                        <button
+                            className="absolute top-0 right-0 m-4 text-black flex items-center"
+                            onClick={closeArtworkModal}
+                            >
+                            {/* Ícono de flecha izquierda */}
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            {/* Texto al lado del ícono */}
+                            <span className="text-sm font-medium ml-2">{translations.regresar}</span>
+                        </button>
 
-                                <h3 className="text-2xl font-bold text-center">
-                                    {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
-                                </h3>
-                                {/* Muestra todas las imágenes */}
-                                <Slider {...settings}>
-                                    {selectedArtwork.images.map((image, index) => (
-                                        <div key={index} onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
-                                            <img src={`${config.API_URL}${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
-                                        </div>
-                                    ))}
-                                </Slider>
-                                {/* Modal de las imágenes */}
-                                {isImageModalOpen && (
-                                    <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
-                                        <div className="bg-white p-5 rounded-lg">
-                                            <img src={selectedImage.url} alt="Imagen ampliada" className="rounded mb-4 w-auto max-h-[80vh] max-w-[90vw]" />
-                                            <button className="px-4 py-2 bg-secondary text-white rounded" onClick={() => setIsImageModalOpen(false)}>
-                                            {translations.btnCerrar}
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Descripción y videos */}
-                                <div className="flex">
-                                    {/* Contenedor de texto */}
-                                    <div className="flex-grow pr-4" style={{flexBasis: '60%'}}>
-                                        <h3 className="text-2xl font-bold">
-                                            {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
-                                        </h3>
-                                        <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
-                                    </div>
-
-                                    {/* Contenedor de videos */}
-                                    <div className="flex-none" style={{flexBasis: '40%'}}>
-                                        {selectedArtwork.videos.map((video, index) => {
-                                            // Extraer el ID del video de YouTube de la URL
-                                            const videoId = video.url.split('v=')[1].split('&')[0];
-
-                                            return (
-                                                <iframe
-                                                    key={index}
-                                                    width="100%"
-                                                    height="315"
-                                                    src={`https://www.youtube.com/embed/${videoId}`}
-                                                    title="YouTube video player"
-                                                    frameBorder="0"
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowFullScreen
-                                                    className="rounded mb-2"
-                                                ></iframe>
-                                            );
-                                        })}
-                                    </div>
+                        <h3 className="text-2xl font-bold text-center">
+                            {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
+                        </h3>
+                        <Slider {...settings}>
+                            {selectedArtwork.images.map((image, index) => (
+                                <div key={index} onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
+                                    <img src={`${config.API_URL}${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
                                 </div>
-
-                                {/* Contenedor fijo en la parte inferior para el botón de cierre */}
-                                <div className="absolute bottom-0 right-0 m-4">
-                                    <button
-                                        className="px-4 py-2 bg-secondary text-white rounded"
-                                        onClick={closeArtworkModal}
-                                    >
-                                        {translations.btnCerrar}
+                            ))}
+                        </Slider>
+                        {isImageModalOpen && (
+                            <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
+                                <div className="bg-white p-5 rounded-lg">
+                                    <img src={selectedImage.url} alt="Imagen ampliada" className="rounded mb-4 w-auto max-h-[80vh] max-w-[90vw]" />
+                                    <button className="px-4 py-2 bg-secondary text-white rounded" onClick={() => setIsImageModalOpen(false)}>
+                                    {translations.btnCerrar}
                                     </button>
                                 </div>
                             </div>
-                        </div>                   
-                    )}
+                        )}
+
+                        <div className="flex">
+                            <div className="flex-grow pr-4" style={{flexBasis: '60%'}}>
+                                <h3 className="text-2xl font-bold">
+                                    {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
+                                </h3>
+                                <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
+                            </div>
+
+                            <div className="flex-none" style={{flexBasis: '40%'}}>
+                                {selectedArtwork.videos.map((video, index) => {
+                                    const videoId = video.url.split('v=')[1].split('&')[0];
+
+                                    return (
+                                        <iframe
+                                            key={index}
+                                            width="100%"
+                                            height="315"
+                                            src={`https://www.youtube.com/embed/${videoId}`}
+                                            title="YouTube video player"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="rounded mb-2"
+                                        ></iframe>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </Plx>
+            )}
 
             {/* Blog */}
             <div id="blog" className="py-20 bg-gray-100" data-aos="fade-up" >
                 <h2 className="text-3xl font-bold text-center">{translations.blog}</h2><br />
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto px-4 " style={{ width: '100vw', height: '80vh'}}>
+                    <iframe src="https://jackhannula.blogspot.com" width="80%" height="500px">
+                        <p>Tu navegador no soporta iFrame.</p>
+                    </iframe>
+                </div>
+
+                {/* <div className="container mx-auto px-4">
                     {props.posts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             {props.posts.map((post) => {
@@ -345,7 +346,6 @@ export default function Welcome(props) {
                             <div className="mt-2" dangerouslySetInnerHTML={{
                                 __html: selectedPost.translations.find(t => t.locale === language)?.content || 'Descripción no disponible'
                             }}>
-                                {/* El contenido HTML se insertará aquí */}
                             </div>
                             <p className="mt-4">Publicado por: {selectedPost.user.name}</p>
                             <p className="mt-1">Fecha de publicación: {new Date(selectedPost.created_at).toLocaleDateString(language)}</p>
@@ -354,7 +354,7 @@ export default function Welcome(props) {
                             </button>
                         </div>
                     </div>
-                )}
+                )} */}
             </div>            
 
             {/* Artistas */}

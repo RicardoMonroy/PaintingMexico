@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Artwork;
+use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -130,6 +131,8 @@ class ArtworkController extends Controller
     {
         \Log::info('Iniciando la actualización del artwork con ID: ' . $id);
         \Log::info('Datos recibidos:', $request->all());
+        \Log::info('IDs de imágenes existentes recibidos:', $request->input('existingImages'));
+
 
         // Buscar el artwork por ID
         $artwork = Artwork::findOrFail($id);
@@ -152,13 +155,43 @@ class ArtworkController extends Controller
         }
 
         // Actualizar imágenes asociadas
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $imagePath = $image->store('public/artwork_images');
-                $artwork->images()->create(['url' => Storage::url($imagePath)]);
-                \Log::info('Imagen asociada agregada:', ['path' => $imagePath]);
+        // Procesar las imágenes existentes
+        if ($request->has('existingImages')) {
+            $existingIds = $request->existingImages; // IDs de las imágenes a mantener
+            $allImageIds = $artwork->images()->pluck('id')->toArray(); // Obtener todos los IDs de imágenes asociadas
+
+            $imagesToDelete = array_diff($allImageIds, $existingIds);
+            foreach ($imagesToDelete as $imageId) {
+                $image = Image::find($imageId);
+                if ($image) {
+                    \Log::info('Ruta del archivo a eliminar:', ['url' => $image->url]);
+                    $correctPath = substr($image->url, strlen('/storage/')); // Esto quita '/storage/' del inicio
+                    Storage::disk('public')->delete($correctPath);
+                    if (Storage::exists($correctPath)) {
+                        // Storage::delete($correctPath);
+                        // Storage::disk('public')->delete($correctPath);
+                        \Log::info('Archivo eliminado: ', ['url' => $correctPath]);
+                    } else {
+                        \Log::info('Archivo no encontrado, no se pudo eliminar:', ['url' => $correctPath]);
+                    }
+                    
+                    $image->delete();
+                }
             }
         }
+
+        // Añadir nuevas imágenes
+        if ($request->has('newImages')) {
+            foreach ($request->newImages as $file) {
+                // Asegúrate de que el archivo es una instancia de UploadedFile
+                if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    $imagePath = $file->store('public/artwork_images');
+                    $artwork->images()->create(['url' => Storage::url($imagePath)]);
+                    \Log::info('Se añadió la imagen:', ['path' => $imagePath]);
+                }
+            }
+        }
+            
 
         // Actualizar vídeos
         // Asegúrate de tener una lógica adecuada para actualizar o añadir nuevos vídeos
