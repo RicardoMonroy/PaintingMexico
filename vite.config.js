@@ -10,6 +10,11 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        rollupOptions: {
+            external: ['react-quill/dist/quill.snow.css']
+        }
+    },
     server: {
         hmr: {
             host: 'localhost',
