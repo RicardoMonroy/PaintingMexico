@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 use App\Models\Info;
 use App\Models\Artwork;
 use App\Models\Post;
@@ -24,7 +25,6 @@ use App\Http\Controllers\ArtworkController;
 */
 
 Route::get('/', function () {
-
     $info = Info::first();    
     $artworks = Artwork::with(['translations', 'images', 'videos'])
                         ->orderBy('created_at', 'desc')
@@ -48,10 +48,6 @@ Route::get('/', function () {
         'posts' => $posts,
         'sales' => $sales,
         'users' => $users,
-        'canLogin' => Route::has('login'),
-        // 'canRegister' => Route::has('register'),
-        // 'laravelVersion' => Application::VERSION,
-        // 'phpVersion' => PHP_VERSION,
     ]);
 });
 
@@ -60,7 +56,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    // Agrega rutas adicionales aquí
     Route::get('/configuracion', function() {
         return Inertia::render('Configuracion');
     })->name('configuracion');
@@ -92,16 +87,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('logout');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
 
 require __DIR__.'/auth.php';

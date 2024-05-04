@@ -1,63 +1,97 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useEffect } from 'react';
+import Checkbox from '@/Components/Checkbox';
+import GuestLayout from '@/Layouts/GuestLayout';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import PrimaryButton from '@/Components/PrimaryButton';
+import TextInput from '@/Components/TextInput';
+import { Head, Link, useForm } from '@inertiajs/react';
 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+export default function Login({ status, canResetPassword }) {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        email: '',
+        password: '',
+        remember: false,
+    });
 
-    const handleLogin = (e) => {
+    useEffect(() => {
+        return () => {
+            reset('password');
+        };
+    }, []);
+
+    const submit = (e) => {
         e.preventDefault();
-        setError('');
 
-        axios.get('/sanctum/csrf-cookie').then(() => {
-            axios.post('/login', { email, password })
-                .then(response => {
-                    // Redirige al usuario al dashboard o maneja la respuesta exitosa aquí
-                    console.log("Inicio de sesión exitoso", response);
-                    window.location.href = '/dashboard';
-                })
-                .catch(error => {
-                    setError("Error en el inicio de sesión, verifica tus credenciales.");
-                    console.error("Error en el inicio de sesión:", error);
-                });
-        });
+        post(route('login'));
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                <form onSubmit={handleLogin}>
-                    <h2 className="text-2xl font-bold mb-5 text-center">Painting México</h2>
-                    <h3 className="text-2xl font-bold mb-5 text-center">Log in</h3>
-                    {error && <div className="bg-red-100 text-red-700 p-2 text-center rounded">{error}</div>}
-                    <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                        />
-                    </div>
-                    <div className="mb-6">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                        />
-                    </div>
-                    <button type="submit" className="w-full bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">Login</button>
-                </form>
-            </div>
-        </div>
-    );
-};
+        <GuestLayout>
+            <Head title="Log in" />
 
-export default Login;
+            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+
+            <form onSubmit={submit}>
+                <div>
+                    <InputLabel htmlFor="email" value="Email" />
+
+                    <TextInput
+                        id="email"
+                        type="email"
+                        name="email"
+                        value={data.email}
+                        className="mt-1 block w-full"
+                        autoComplete="username"
+                        isFocused={true}
+                        onChange={(e) => setData('email', e.target.value)}
+                    />
+
+                    <InputError message={errors.email} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="password" value="Password" />
+
+                    <TextInput
+                        id="password"
+                        type="password"
+                        name="password"
+                        value={data.password}
+                        className="mt-1 block w-full"
+                        autoComplete="current-password"
+                        onChange={(e) => setData('password', e.target.value)}
+                    />
+
+                    <InputError message={errors.password} className="mt-2" />
+                </div>
+
+                <div className="block mt-4">
+                    <label className="flex items-center">
+                        <Checkbox
+                            name="remember"
+                            checked={data.remember}
+                            onChange={(e) => setData('remember', e.target.checked)}
+                        />
+                        <span className="ms-2 text-sm text-gray-600">Remember me</span>
+                    </label>
+                </div>
+
+                <div className="flex items-center justify-end mt-4">
+                    {canResetPassword && (
+                        <Link
+                            href={route('password.request')}
+                            className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Forgot your password?
+                        </Link>
+                    )}
+
+                    <PrimaryButton className="ms-4" disabled={processing}>
+                        Log in
+                    </PrimaryButton>
+                </div>
+            </form>
+        </GuestLayout>
+    );
+}

@@ -9,17 +9,6 @@ use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InfoController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuarios', [UserController::class, 'index']);
     Route::post('/usuarios', [UserController::class, 'store']);
@@ -49,6 +38,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/info', [InfoController::class, 'show']);
     Route::put('/info/{id}', [InfoController::class, 'update']);
-
-    // Puedes añadir más rutas para operaciones CRUD aquí
 });
