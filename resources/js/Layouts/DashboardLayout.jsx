@@ -35,11 +35,11 @@ const DashboardLayout = ({ children }) => {
                             {translations.usuarios}
                         </InertiaLink>
                     </li>
-                    <li>
+                    {/* <li>
                         <InertiaLink href="/posts" className="block py-2 text-button hover:bg-tertiary text-tertiary">
                             {translations.posts}
                         </InertiaLink>
-                    </li>
+                    </li> */}
                     <li>
                         <InertiaLink href="/artworks" className="block py-2 text-button hover:bg- text-tertiary">
                             {translations.artwork}

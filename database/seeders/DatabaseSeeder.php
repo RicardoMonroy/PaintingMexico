@@ -22,7 +22,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'Ricardo Monroy',
             'email' => 'rmonroy.rodriguez@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('123456'), // password
+            'password' => bcrypt('Morr3179*'), // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
+            'role' => 'admin',
+        ]);
+        \App\Models\User::factory()->create([
+            'name' => 'Jack Hannula',
+            'email' => 'jackhannula@icloud.com',
+            'email_verified_at' => now(),
+            'password' => bcrypt('@Mesones38*'), // password
             'remember_token' => \Illuminate\Support\Str::random(10),
             'role' => 'admin',
         ]);
