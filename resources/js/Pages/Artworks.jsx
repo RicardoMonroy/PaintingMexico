@@ -5,7 +5,6 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 import EditArtworkForm from './EditArtworkForm';
 import ViewArtwork from './ViewArtwork';
 import NewArtworkForm from './NewArtworkForm'; // Ajusta la ruta según la ubicación del archivo
-import config from '@/config';
 import { useLanguage } from '@/contexts/LanguageContext';
 import en from '../translations/en.json';
 import es from '../translations/es.json';
