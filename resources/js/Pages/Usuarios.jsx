@@ -26,6 +26,7 @@ const Usuarios = () => {
     const translations = language === 'en' ? en : es;
 
     useEffect(() => {
+        console.log(`${config.API_URL}/usuarios`);
         axios.get(`${config.API_URL}/usuarios`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
