@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import config from '@/config';
 import axios from 'axios';
-import config from '@/config';
 
 function ViewSale({ viewId }) {
     const [saleData, setSaleData] = useState(null);
