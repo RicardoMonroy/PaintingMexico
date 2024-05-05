@@ -9,7 +9,7 @@ function Info() {
     const [email, setEmail] = useState('');
 
     useEffect(() => {
-        axios.get('/api/info')
+        axios.get(`${config.API_URL}/info`)
             .then(response => {
                 console.log(response.data);
                 setInfo(response.data);
