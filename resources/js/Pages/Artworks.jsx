@@ -126,7 +126,7 @@ function Artworks() {
                             {Array.isArray(artworks) && artworks.map((artwork) => (
                                 <tr key={artwork.id}>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <img src={`${config.API_URL}${artwork.front}`} alt="Front" className="h-10 w-10 object-cover" />
+                                        <img src={`${artwork.front}`} alt="Front" className="h-10 w-10 object-cover" />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {artwork.translations[0]?.title} {/* Accede directamente al título de la traducción */}

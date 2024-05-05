@@ -208,7 +208,7 @@ export default function Welcome(props) {
                                         <div key={artwork.id} className={`relative overflow-hidden ${spanClass}`} data-aos="zoom-in" onClick={() => openArtworkModal(artwork)}>
                                             <img
                                                 className="w-full h-full object-cover rounded cursor-pointer"
-                                                src={`${config.API_URL}${artwork.front}`}
+                                                src={`${artwork.front}`}
                                                 alt={artwork.translations[0]?.id || "Art image"}
                                                 onClick={() => openArtworkModal(artwork)}
                                             />
@@ -247,7 +247,7 @@ export default function Welcome(props) {
                         <Slider {...settings}>
                             {selectedArtwork.images.map((image, index) => (
                                 <div key={index} onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
-                                    <img src={`${config.API_URL}${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
+                                    <img src={`${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
                                 </div>
                             ))}
                         </Slider>
@@ -370,7 +370,7 @@ export default function Welcome(props) {
                                     <div key={user.id} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" data-aos="zoom-in" onClick={() => openProfileModal(user)}>
                                         <img
                                             className="w-full h-48 object-cover"
-                                            src={user.profile.avatar ? `${config.API_URL}${user.profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
+                                            src={user.profile.avatar ? `${user.profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
                                             alt={profileTranslation?.title || 'Avatar'}
                                         />
                                         <div className="px-6 py-4">
@@ -391,7 +391,7 @@ export default function Welcome(props) {
                             <div className="bg-white p-5 rounded-lg max-w-3xl w-full overflow-y-auto" style={{ maxHeight: '80vh' }}>
                                 {selectedUser.profile.avatar && (
                                     <img
-                                        src={selectedUser.profile.avatar ? `${config.API_URL}${selectedUser.profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
+                                        src={selectedUser.profile.avatar ? `${selectedUser.profile.avatar}` : '/storage/avatars/AvatarDefault.png'}
                                         alt="Avatar"
                                         className="mx-auto w-48 h-48 rounded-full mb-4"
                                         style={{ maxWidth: '70%', height: 'auto' }}
@@ -428,7 +428,7 @@ export default function Welcome(props) {
                                     <div key={index} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" data-aos="zoom-in" onClick={() => openSaleProfileModal(sale)}>
                                         <img
                                             className="w-full h-48 object-cover"
-                                            src={sale.cover ? `${config.API_URL}${sale.cover}` : '/storage/avatars/AvatarDefault.png'}
+                                            src={sale.cover ? `${sale.cover}` : '/storage/avatars/AvatarDefault.png'}
                                             alt={saleTranslation?.title || 'Avatar'}
                                         />
                                         <div className="px-6 py-4">
@@ -449,7 +449,7 @@ export default function Welcome(props) {
                         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
                             <div className="bg-white p-5 rounded-lg max-w-3xl w-full overflow-y-auto" style={{ maxHeight: '80vh' }}>
                                 <img
-                                    src={`${config.API_URL}${selectedSale.cover}`}
+                                    src={`${selectedSale.cover}`}
                                     alt="Sale Image"
                                     className="mx-auto w-48 h-48 mb-4"
                                     style={{ maxWidth: '80%', height: 'auto' }}
@@ -465,7 +465,7 @@ export default function Welcome(props) {
                                     {selectedSale.sale_galleries.map((galleryItem) => (
                                         <img
                                             key={galleryItem.idsaleGallery}
-                                            src={`${config.API_URL}${galleryItem.url}`}   
+                                            src={`${galleryItem.url}`}   
                                             alt="Gallery Image"
                                             className="w-full h-auto rounded"
                                         />

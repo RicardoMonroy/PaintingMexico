@@ -3,6 +3,7 @@ import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { BeatLoader } from 'react-spinners';
 
 function EditArtworkForm({ artworkId, closeModal }) {
     const [artworkData, setArtworkData] = useState({
@@ -17,6 +18,8 @@ function EditArtworkForm({ artworkId, closeModal }) {
         newImages: [], // Nuevas imágenes añadidas por el usuario
         videos: [],
     });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     
 
     useEffect(() => {
@@ -106,6 +109,8 @@ function EditArtworkForm({ artworkId, closeModal }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
 
         if (!artworkId) {
             console.error("No hay información del ID");
@@ -153,25 +158,26 @@ function EditArtworkForm({ artworkId, closeModal }) {
         formData.append('_method', 'PUT');
 
     
-        axios.post(`${config.API_URL}/artworks/${artworkId}`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-        .then(response => {
-            console.log('Se supone que envió el response: ', response.data);
-            console.log("Información actualizada con éxito");
+        try {
+            await axios.post(`${config.API_URL}/artworks/${artworkId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             closeModal();
-        })
-        .catch(error => {
-            console.error("Error al actualizar la información:", error);
-        });  
+            setLoading(false);
+        } catch (error) {
+            setError('Error al actualizar el artwork. Por favor, intenta de nuevo.');
+            setLoading(false);
+            console.error('Error updating artwork:', error);
+        } 
         
     };
     
 
     return (
         <div className="p-6 max-w-3xl mx-auto bg-card rounded-lg shadow-md">
+            {loading && <BeatLoader color="#36D7B7" />}
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-1 md:col-span-2">
                     <label className="block text-primary font-bold mb-2">
@@ -284,6 +290,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                     </button>
                 </div>
             </form>
+            {error && <div className="text-red-500 text-center mt-2">{error}</div>}
         </div>
     );
 }
