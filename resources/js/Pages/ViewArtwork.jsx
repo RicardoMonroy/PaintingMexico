@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '@/config';
 import axios from 'axios';
 
 function ViewArtwork({ artworkId, onEdit }) {
@@ -18,7 +19,7 @@ function ViewArtwork({ artworkId, onEdit }) {
 
         const fetchArtworkData = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/artworks/${artworkId}`);
+                const response = await axios.get(`${config.API_URL}/artworks/${artworkId}`);
                 const artwork = response.data;
                 setArtworkData({
                     front: artwork.front,

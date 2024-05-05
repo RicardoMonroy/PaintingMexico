@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -20,7 +21,7 @@ const EditUserProfile = ({ userId, closeEditMode, profile }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axios.get(`/api/profiles/${userId}`);
+                const response = await axios.get(`${config.API_URL}/profiles/${userId}`);
                 const data = response.data;
     
                 // Extraer descripciones en inglés y español

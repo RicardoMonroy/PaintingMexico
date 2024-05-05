@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Importa los estilos de ReactQuill
@@ -81,7 +82,7 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
     
         // Comentar la llamada a axios para evitar enviar los datos durante la depuración
         try {
-            await axios.post('/api/artworks', formData, {
+            await axios.post(`${config.API_URL}/artworks`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

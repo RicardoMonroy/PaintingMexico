@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Importa los estilos de ReactQuill
@@ -26,7 +27,7 @@ function EditSaleForm({ saleId, closeModal  }) {
     useEffect(() => {
         const fetchSaleData = async () => {
             try {
-                const response = await axios.get(`/api/sales/${saleId}`);
+                const response = await axios.get(`${config.API_URL}/sales/${saleId}`);
                 const data = response.data;
     
                 const translations = data.sale_translates.reduce((acc, translation) => {

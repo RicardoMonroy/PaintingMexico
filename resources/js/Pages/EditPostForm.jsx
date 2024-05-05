@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -15,7 +16,7 @@ function EditPostForm({ postId, closeModal }) {
     useEffect(() => {
         const fetchPostData = async () => {
             try {
-                const response = await axios.get(`/api/posts/${postId}`);
+                const response = await axios.get(`${config.API_URL}/posts/${postId}`);
                 const post = response.data;
                 console.log(response.data);
 

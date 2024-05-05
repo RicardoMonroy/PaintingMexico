@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import NewSaleForm from './NewSaleForm';
@@ -29,7 +30,7 @@ function Sales() {
 
     const fetchSales = async () => {
         try {
-            const response = await axios.get(`/api/sales?lang=${language}`);
+            const response = await axios.get(`${config.API_URL}/sales?lang=${language}`);
             setSales(response.data);
         } catch (error) {
             console.error("Error al cargar las ventas:", error);
@@ -56,7 +57,7 @@ function Sales() {
 
     const reloadSales = async () => {
         try {
-            const response = await axios.get(`/api/sales?lang=${language}`);
+            const response = await axios.get(`${config.API_URL}/sales?lang=${language}`);
             setSales(response.data);
             closeModal(); // Cierra el modal después de recargar los datos
         } catch (error) {

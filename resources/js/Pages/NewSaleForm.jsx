@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Importa los estilos de ReactQuill
@@ -80,7 +81,7 @@ function NewSaleForm({ closeModal }) {
     console.log('Sales data:', saleData);
 
     try {
-        await axios.post('/api/sales', formData, {
+        await axios.post(`${config.API_URL}/sales`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

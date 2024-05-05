@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '@/config';
 import axios from 'axios';
 
 function ViewPost({ postId, onEdit }) {
@@ -15,7 +16,7 @@ function ViewPost({ postId, onEdit }) {
 
         const fetchPostData = async () => {
             try {
-                const response = await axios.get(`http://127.0.0.1:8000/api/posts/${postId}`);
+                const response = await axios.get(`${config.API_URL}/posts/${postId}`);
                 const post = response.data;
                 setPostData({
                     cover: post.cover,

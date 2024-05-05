@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback  } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import NewPostForm from './NewPostForm';
@@ -29,7 +30,7 @@ function Posts() {
 
     const fetchPosts = useCallback(async () => {
         try {
-            const response = await axios.get(`/api/posts?lang=${language}`);
+            const response = await axios.get(`${config.API_URL}/posts?lang=${language}`);
             setPosts(response.data);
         } catch (error) {
             console.error("Error al cargar los posts:", error);
@@ -57,7 +58,7 @@ function Posts() {
 
     const reloadPosts = async () => {
         try {
-            const response = await axios.get(`/api/posts?lang=${language}`);
+            const response = await axios.get(`${config.API_URL}/posts?lang=${language}`);
             setPosts(response.data);
             closeModal(); // Cierra el modal después de recargar los datos
         } catch (error) {

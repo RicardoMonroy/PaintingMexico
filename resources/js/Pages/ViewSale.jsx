@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import config from '@/config';
 
@@ -9,7 +10,7 @@ function ViewSale({ viewId }) {
         if (viewId) {
             const fetchSaleData = async () => {
                 try {
-                    const response = await axios.get(`/api/sales/${viewId}`);
+                    const response = await axios.get(`${config.API_URL}/sales/${viewId}`);
                     setSaleData(response.data);
                     console.log(response.data);
                 } catch (error) {

@@ -23,7 +23,7 @@ const UserProfile = ({ userId }) => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await axios.get(`/api/profiles/${userId}`);
+                const response = await axios.get(`${config.API_URL}/profiles/${userId}`);
                 if (response.status === 404) {
                     setIsEditing(true); // Perfil no encontrado, activa la edición para crear uno nuevo
                 } else {

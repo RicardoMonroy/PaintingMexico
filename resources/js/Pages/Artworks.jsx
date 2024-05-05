@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import EditArtworkForm from './EditArtworkForm';
@@ -29,7 +30,7 @@ function Artworks() {
 
     const fetchArtworks = useCallback(async () => {
         try {
-            const response = await axios.get(`/api/artworks?lang=${language}`);
+            const response = await axios.get(`${config.API_URL}/artworks?lang=${language}`);
             console.log(response.data); // Verifica la estructura de los datos aquí
                 setArtworks(response.data);
         } catch (error) {
@@ -44,7 +45,7 @@ function Artworks() {
     const handleDeleteArtwork = async () => {
         if (selectedArtwork && selectedArtwork.id) {
             try {
-                const response = await axios.delete(`/api/artworks/${selectedArtwork.id}`);
+                const response = await axios.delete(`${config.API_URL}/artworks/${selectedArtwork.id}`);
                 console.log('Artwork eliminado:', response.data);
                 // Actualiza el estado para reflejar la eliminación en la UI
                 setArtworks(artworks.filter(artwork => artwork.id !== selectedArtwork.id));
@@ -57,7 +58,7 @@ function Artworks() {
 
     const reloadArtworks = async () => {
         try {
-            const response = await axios.get(`/api/artworks?lang=${language}`);
+            const response = await axios.get(`${config.API_URL}/artworks?lang=${language}`);
             setArtworks(response.data);
             closeModal(); // Cierra el modal después de recargar los datos
         } catch (error) {

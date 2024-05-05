@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 
@@ -41,7 +42,7 @@ function Info() {
             console.log(key, value);
         }
     
-        axios.post(`/api/info/${info.idinfo}`, formData) // Cambio a POST
+        axios.post(`${config.API_URL}/info/${info.idinfo}`, formData) // Cambio a POST
         .then(response => {
             setInfo(response.data);
             console.log('Se supone que envió el response: ', response.data);

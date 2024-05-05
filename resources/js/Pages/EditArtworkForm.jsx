@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -21,7 +22,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
     useEffect(() => {
         const fetchArtworkData = async () => {
             try {
-                const response = await axios.get(`/api/artworks/${artworkId}`);
+                const response = await axios.get(`${config.API_URL}/artworks/${artworkId}`);
                 const artwork = response.data;
                 console.log(artwork);
                 
@@ -152,7 +153,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
         formData.append('_method', 'PUT');
 
     
-        axios.post(`/api/artworks/${artworkId}`, formData, {
+        axios.post(`${config.API_URL}/artworks/${artworkId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

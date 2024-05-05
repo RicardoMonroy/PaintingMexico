@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Importa los estilos de ReactQuill
@@ -39,7 +40,7 @@ function NewPostForm({ closeModal, onPostCreated }) {
         formData.append('translations', JSON.stringify(postData.translations));
 
         try {
-            const response = await axios.post('/api/posts', formData, {
+            const response = await axios.post(`${config.API_URL}/posts`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
