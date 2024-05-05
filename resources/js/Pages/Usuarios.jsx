@@ -26,7 +26,11 @@ const Usuarios = () => {
     const translations = language === 'en' ? en : es;
 
     useEffect(() => {
-        axios.get('/api/usuarios')
+        axios.get('/api/usuarios', {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
             .then(response => setUsers(response.data))
             .catch(error => console.error("Error al obtener los usuarios:", error));
     }, []);
