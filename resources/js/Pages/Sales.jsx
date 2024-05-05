@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import config from '@/config';
 import axios from 'axios';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import NewSaleForm from './NewSaleForm';
