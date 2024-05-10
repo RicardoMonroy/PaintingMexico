@@ -69,7 +69,7 @@ const Usuarios = () => {
         }
 
         try {
-            const response = await axios.post('/api/usuarios', formData);
+            const response = await axios.post(`${config.API_URL}/api/usuarios`, formData);
             setIsModalOpen(false); // Cierra el modal después de la operación exitosa
             setUsers([...users, response.data]); // Añade el nuevo usuario a la lista
             // Restablece el estado del formulario o maneja la respuesta exitosa como prefieras
