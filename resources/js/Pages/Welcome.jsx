@@ -494,9 +494,12 @@ export default function Welcome(props) {
                                 <h2 className="text-2xl font-bold">
                                     {selectedSale.sale_translates.find(t => t.locale === language)?.title || 'No title available'}
                                 </h2>
-                                <p className="mt-2">
-                                    {selectedSale.sale_translates.find(t => t.locale === language)?.description || 'No description available'}
-                                </p>
+                                <p
+                                    className="mt-2"
+                                    dangerouslySetInnerHTML={{
+                                        __html: selectedSale.sale_translates.find(t => t.locale === language)?.description || 'No description available'
+                                    }}
+                                ></p>
                                 {/* Muestra las imágenes de la galería */}
                                 <div className="grid grid-cols-2 gap-4">
                                     {selectedSale.sale_galleries.map((galleryItem) => (
