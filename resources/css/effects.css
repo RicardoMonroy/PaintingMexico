@@ -38,3 +38,17 @@ iframe {
     height: 80vh; /* 80% de la altura de la ventana del navegador */
     border: none;
 }
+
+nav {
+    background-color: transparent;
+}
+
+button {
+    background-color: #3490dc; /* Cambia al color que prefieras */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 10px;
+}

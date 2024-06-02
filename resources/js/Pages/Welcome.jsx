@@ -12,6 +12,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import en from '../translations/en.json';
 import es from '../translations/es.json';
+import enFlag from '../../assets/en.png';
+import esFlag from '../../assets/es.png';
+import loginIcon from '../../assets/login.png';
 
 export default function Welcome(props) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -140,7 +143,19 @@ export default function Welcome(props) {
     return (
         <div id="home" >
             {/* Navbar */}
-            <nav className="bg-gray-200 p-4 fixed top-0 left-0 w-full z-50">
+            <nav className="bg-transparent p-4 fixed top-0 left-0 w-full z-50 flex justify-between items-center">
+                <div></div>
+                <div className="flex space-x-4">
+                    <InertiaLink href="/login" className="cursor-pointer h-8">
+                        <img src={loginIcon} alt="Login" className="w-8 h-8" />
+                    </InertiaLink>
+                    <div className="flex space-x-2">
+                        <img src={enFlag} alt="English" onClick={() => changeLanguage('en')} className="cursor-pointer h-8"/>
+                        <img src={esFlag} alt="Español" onClick={() => changeLanguage('es')} className="cursor-pointer h-8"/>
+                    </div>
+                </div>
+            </nav>
+            {/* <nav className="bg-gray-200 p-4 fixed top-0 left-0 w-full z-50">
                 <div className="flex justify-between items-center w-full px-2 lg:px-4">
                     <div className="text-lg font-bold">
                         <button onClick={() => scrollToSection('home')} className="text-2xl font-semibold text-primary">Painting México</button>
@@ -159,9 +174,6 @@ export default function Welcome(props) {
                             onClick={() => setIsMenuOpen(false)}
                             className="p-4 lg:hidden absolute top-4 right-4"
                             >
-                            {/* <svg className="h-6 w-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                                <path d="M6 18L18 6M6 6l12 12" />
-                            </svg> */}
                             </button>
                         )}
                         <button onClick={() => scrollToSection('gallery')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.galeria}</button>
@@ -182,17 +194,42 @@ export default function Welcome(props) {
                         </select>
                     </div>
                 </div>
-            </nav>
+            </nav> */}
 
             {/* Sección de Bienvenida */}
-            <div className="text-center py-10 animate__animated animate__zoomIn">
+            <div className="relative text-center animate__animated animate__zoomIn">
                 {props.info ? (
-                    <div>
+                    <div className="relative">
                         <img src={props.info.banner} alt="Banner" className="w-full h-auto mx-auto" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold" style={{ marginTop: 'calc(3vh / 3)' }}>
+                                Painting México
+                            </h1>
+                        </div>
                     </div>
-                ): (
+                ) : (
                     <p className="mb-4 text font-primary">{translations.noInfoAvailable}:</p>
                 )}
+            </div>
+            
+
+            {/* Nav Items as Buttons */}
+            <div className="text-center space-y-4 mt-10">
+                <button onClick={() => scrollToSection('gallery')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
+                    {translations.galeria}
+                </button>
+                <button onClick={() => scrollToSection('blog')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
+                    {translations.blog}
+                </button>
+                <button onClick={() => scrollToSection('artists')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
+                    {translations.artistas}
+                </button>
+                <button onClick={() => scrollToSection('sales')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
+                    {translations.sales}
+                </button>
+                <button onClick={() => scrollToSection('contact')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
+                    {translations.contacto}
+                </button>
             </div>
 
             {/* Galería */}
