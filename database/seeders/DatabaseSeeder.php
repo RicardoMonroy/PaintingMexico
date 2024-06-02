@@ -34,6 +34,14 @@ class DatabaseSeeder extends Seeder
             'remember_token' => \Illuminate\Support\Str::random(10),
             'role' => 'admin',
         ]);
+        \App\Models\User::factory()->create([
+            'name' => 'Mariana Vega',
+            'email' => 'chichimecart@gmail.com',
+            'email_verified_at' => now(),
+            'password' => bcrypt('123456*'), // password
+            'remember_token' => \Illuminate\Support\Str::random(10),
+            'role' => 'admin',
+        ]);
 
         // \App\Models\User::factory()->count(5)->create();
 

@@ -119,7 +119,7 @@ function Sales() {
                 <h2 className="text-2xl font-semibold mb-4 text-primary">{translations.sales}</h2>
                 <button
                     onClick={handleOpenNewSaleModal}
-                    className="bg-primary hover:bg-secondary text-secondary font-bold py-2 px-4 rounded"
+                    className="bg-primary hover:bg-secondary text-tertiary font-bold py-2 px-4 rounded"
                 >
                     {translations.nuevo}
                 </button>
@@ -149,7 +149,7 @@ function Sales() {
                             return (
                                 <tr key={sale.idsales}>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <img src={`${config.API_URL}${sale.cover}`} alt="Cover" className="h-10 w-10 object-cover" />
+                                        <img src={`${sale.cover}`} alt="Cover" className="h-10 w-10 object-cover" />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {translation ? translation.title : 'No title available'}

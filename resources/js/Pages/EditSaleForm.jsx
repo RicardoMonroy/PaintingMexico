@@ -258,7 +258,7 @@ function EditSaleForm({ saleId, closeModal  }) {
                 <div className="col-span-2">
                     <button
                         type="submit"
-                        className="bg-primary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
+                        className="bg-primary text-tertiary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
                     >
                         Update Sale
                     </button>

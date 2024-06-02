@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('sale_urls', function (Blueprint $table) {
             $table->id('idsaleURLs');
-            $table->string('store', 45);
-            $table->string('url', 255);
+            $table->string('store', 255);
+            $table->text('url');
             $table->unsignedBigInteger('sales_idsales');
             $table->timestamps();
 

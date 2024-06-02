@@ -3,6 +3,7 @@ import config from '@/config';
 import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Importa los estilos de ReactQuill
+import { BeatLoader } from 'react-spinners'; // Importar el spinner
 
 function NewSaleForm({ closeModal }) {
   const [cover, setCover] = useState(null);
@@ -15,6 +16,8 @@ function NewSaleForm({ closeModal }) {
       urls: [],
       galleries: []
   });
+  const [loading, setLoading] = useState(false); // Estado para controlar el spinner
+  const [error, setError] = useState(''); // Estado para manejar errores
 
   const handleFileChange = (e) => {
     setCover(e.target.files[0]);
@@ -63,6 +66,8 @@ function NewSaleForm({ closeModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Activar el indicador de carga
+    setError(''); // Reiniciar mensajes de error
 
     const formData = new FormData();
     formData.append('cover', cover);    
@@ -90,6 +95,9 @@ function NewSaleForm({ closeModal }) {
         closeModal();
     } catch (error) {
         console.error('Error al crear la sale:', error);
+        setError('Error al crear la sale. Intenta nuevamente.'); // Establecer mensaje de error
+    } finally {
+      setLoading(false); // Desactivar el indicador de carga
     }
   };
     
@@ -200,10 +208,12 @@ function NewSaleForm({ closeModal }) {
         <div className="col-span-2">
           <button
             type="submit"
-            className="bg-primary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
+            className="bg-primary text-tertiary hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
+            disabled={loading} // Deshabilita el botón mientras se carga
           >
             Submit
           </button>
+          {loading && <BeatLoader color="#36D7B7" />} 
         </div>
       </form>
     </div>

@@ -102,7 +102,7 @@ const Usuarios = () => {
                 <h2 className="text-2xl font-semibold mb-4 text-primary">{translations.bienvenidaUsuarios}</h2>
                 <button
                     onClick={handleOpenModal}
-                    className="bg-primary hover:bg-secondary text-secondary font-bold py-2 px-4 rounded"
+                    className="bg-primary hover:bg-secondary text-tertiary font-bold py-2 px-4 rounded"
                 >
                     {translations.nuevo}
                 </button>

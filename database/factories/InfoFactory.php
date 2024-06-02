@@ -18,7 +18,7 @@ class InfoFactory extends Factory
     {
         return [
             'banner' => asset('storage/banners/DefaultBanner.png'), // Genera una imagen de banner
-            'email' => 'contacto@paintingmexico.com', // Correo de contacto estático
+            'email' => 'jackhannula2@gmail.com', // Correo de contacto estático
         ];
     }
 }

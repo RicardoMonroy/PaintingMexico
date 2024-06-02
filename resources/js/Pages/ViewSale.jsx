@@ -31,7 +31,7 @@ function ViewSale({ viewId }) {
                 {/* Imagen de portada */}
                 <div className="mb-4 col-span-2 flex justify-center">
                     <img
-                        src={`${config.API_URL}${saleData.cover}`}
+                        src={`${saleData.cover}`}
                         alt="Cover"
                         className="w-3/5 object-cover"
                     />
@@ -44,7 +44,7 @@ function ViewSale({ viewId }) {
                     </label>
                     <div className="flex flex-wrap justify-center gap-4 mb-4">
                         {saleData.sale_galleries.map((gallery, index) => (
-                            <img key={index} src={`${config.API_URL}${gallery.url}`} alt={`Gallery ${index}`} className="w-32 h-32 object-cover" />
+                            <img key={index} src={`${gallery.url}`} alt={`Gallery ${index}`} className="w-32 h-32 object-cover" />
                         ))}
                     </div>
                 </div>

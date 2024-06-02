@@ -97,7 +97,7 @@ function Artworks() {
                 <h2 className="text-2xl font-semibold mb-4 text-primary">{translations.artwork}</h2>
                 <button
                     onClick={handleOpenNewArtworkModal}
-                    className="bg-primary hover:bg-secondary text-secondary font-bold py-2 px-4 rounded"
+                    className="bg-primary hover:bg-secondary text-tertiary font-bold py-2 px-4 rounded"
                 >
                     {translations.nuevo}
                 </button>
