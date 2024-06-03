@@ -196,7 +196,12 @@ function Artworks() {
                                     </svg>
                                 </button>
                                 <ViewArtwork artworkId={selectedArtwork?.id}/>
-                                <button onClick={() => setIsViewModalOpen(false)}>Cerrar</button>
+                                <button 
+                                    className="bg-primary text-tertiary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
+                                    onClick={() => setIsViewModalOpen(false)}
+                                >
+                                    Cerrar
+                                </button>
                             </div>
                         </div>
                     </div>

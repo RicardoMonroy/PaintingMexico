@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import config from '@/config';
 import axios from 'axios';
+import '../../css/effects.css';
 
 function ViewArtwork({ artworkId, onEdit }) {
     const [artworkData, setArtworkData] = useState({
         front: '',
         background_color: '',
+        section: '',
         translations: {
             en: { title: '', description: '' },
             es: { title: '', description: '' },
@@ -24,6 +26,7 @@ function ViewArtwork({ artworkId, onEdit }) {
                 setArtworkData({
                     front: artwork.front,
                     background_color: artwork.background_color,
+                    section: artwork.section, 
                     translations: artwork.translations.reduce((acc, translation) => {
                         acc[translation.locale] = { title: translation.title, description: translation.description };
                         return acc;
@@ -46,13 +49,18 @@ function ViewArtwork({ artworkId, onEdit }) {
                     <img src={artworkData.front} alt="Front" className="mb-4 h-40 w-auto object-cover" />
                 </div>
 
+                <div className="col-span-1 md:col-span-2 flex justify-center">
+                    <h2 className="text-primary font-bold mb-2">Section: </h2>
+                    <p>{artworkData.section || 'None'}</p>  {/* Mostramos la sección */}
+                </div>
+
                 {Object.entries(artworkData.translations).map(([lang, { title, description }]) => (
                     <div key={lang}>
                         {/* <h2 className="text-primary font-bold mb-2">{`${lang.toUpperCase()} Title`}</h2> */}
-                        <p>{title}</p>
+                        <p><strong>{title}</strong></p>
 
                         {/* <h2 className="text-primary font-bold mb-2">{`${lang.toUpperCase()} Description`}</h2> */}
-                        <div dangerouslySetInnerHTML={{ __html: description }} />
+                        <div className="text-justify break-words" dangerouslySetInnerHTML={{ __html: description }} />
                     </div>
                 ))}
 

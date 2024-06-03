@@ -17,6 +17,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
         existingImages: [], // Imágenes cargadas inicialmente del servidor
         newImages: [], // Nuevas imágenes añadidas por el usuario
         videos: [],
+        section: ''
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -38,7 +39,8 @@ function EditArtworkForm({ artworkId, closeModal }) {
                     }, {}),
                     images: artwork.images.map(img => img.url), // Asegúrate de usar el campo correcto
                     videos: artwork.videos.map(video => video.url), // Asegúrate de usar el campo correcto
-                    existingImages: artwork.images || [] // Asegúrate de que siempre asignes un arreglo
+                    existingImages: artwork.images || [], // Asegúrate de que siempre asignes un arreglo
+                    section: artwork.section || ''
                 });
             } catch (error) {
                 console.error('Error fetching artwork data:', error);
@@ -69,6 +71,13 @@ function EditArtworkForm({ artworkId, closeModal }) {
         // console.log('Updated images:', updatedExistingImages);
         setArtworkData({ ...artworkData, existingImages: updatedExistingImages });
     };    
+
+    const handleImageDescriptionChange = (index, value) => {
+        const updatedExistingImages = [...artworkData.existingImages];
+        updatedExistingImages[index].description = value;
+        setArtworkData({ ...artworkData, existingImages: updatedExistingImages });
+    };
+    
 
     const handleTranslationChange = (language, field, value) => {
         setArtworkData({
@@ -107,6 +116,10 @@ function EditArtworkForm({ artworkId, closeModal }) {
         setArtworkData({ ...artworkData, background_color: e.target.value });
     };
 
+    const handleSectionChange = (e) => {
+        setArtworkData({ ...artworkData, section: e.target.value });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -120,6 +133,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
         
         const formData = new FormData();
         formData.append('background_color', artworkData.background_color);
+        formData.append('section', artworkData.section);
         
         // Si estás actualizando una imagen o un archivo, asegúrate de añadirlo solo si el usuario seleccionó un nuevo archivo
         if (artworkData.front instanceof File) {
@@ -130,8 +144,13 @@ function EditArtworkForm({ artworkId, closeModal }) {
         // Agregar imágenes existentes que se mantienen
         if (artworkData.existingImages && artworkData.existingImages.length > 0) {
             artworkData.existingImages.forEach((image, index) => {
-                formData.append(`existingImages[${index}]`, image.id.toString()); // Asegúrate de usar image.id
-                console.log('Se añaden al FormData los IDs de las imágenes:', image.id);
+                if (image.id) { // Verifica que la imagen tiene un id
+                    formData.append(`existingImages[${index}][id]`, image.id.toString()); // Asegúrate de usar image.id
+                    formData.append(`existingImages[${index}][description]`, image.description || '');
+                    console.log('Se añaden al FormData los IDs de las imágenes:', image.id);
+                } else {
+                    console.error('La imagen no tiene un id:', image);
+                }
             });
         }
         
@@ -198,6 +217,12 @@ function EditArtworkForm({ artworkId, closeModal }) {
                             {artworkData.existingImages.map((img, index) => (
                                 <div key={img.id || `image-${index}`} className="inline-block relative">
                                     <img src={img.url} alt={`Image ${index}`} className="w-full h-auto object-cover rounded-lg shadow-md" />
+                                    <textarea
+                                        value={img.description || ''}
+                                        onChange={(e) => handleImageDescriptionChange(index, e.target.value)}
+                                        placeholder="Enter image description"
+                                        className="w-full mt-2 p-2 border rounded shadow-sm"
+                                    />
                                     <button type="button" onClick={() => handleRemoveImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
                                         X
                                     </button>
@@ -212,6 +237,25 @@ function EditArtworkForm({ artworkId, closeModal }) {
                             className="w-full p-2 border rounded shadow-sm"
                         />
                     </div>
+                    {/* <div className="mb-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                            {artworkData.existingImages.map((img, index) => (
+                                <div key={img.id || `image-${index}`} className="inline-block relative">
+                                    <img src={img.url} alt={`Image ${index}`} className="w-full h-auto object-cover rounded-lg shadow-md" />
+                                    <button type="button" onClick={() => handleRemoveImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                                        X
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                        <br />
+                        <input
+                            type="file"
+                            multiple
+                            onChange={handleAddImage}
+                            className="w-full p-2 border rounded shadow-sm"
+                        />
+                    </div> */}
                 </div>                
 
                 <div>
@@ -257,6 +301,17 @@ function EditArtworkForm({ artworkId, closeModal }) {
                 </div>
 
                 <div className="col-span-1 md:col-span-2">
+                <label className="block text-primary font-bold mb-2">Section</label>
+                    <select
+                        value={artworkData.section}
+                        onChange={handleSectionChange}
+                        className="w-full p-2 border rounded shadow-sm"
+                    >
+                        <option value="">None</option>
+                        <option value="INAH">INAH</option>
+                        <option value="Camino Real">Camino Real</option>
+                    </select>
+
                     <label className="block text-primary font-bold mb-2">Videos</label>
                     {artworkData.videos.map((video, index) => (
                         <div key={index} className="flex items-center mb-2">
@@ -278,13 +333,13 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         value={artworkData.background_color}
                         onChange={handleColorChange}
                         className="w-full h-12 p-2 border rounded shadow-sm"
-                    />
+                    />                    
                 </div>
 
                 <div className="col-span-2">
                     <button
                         type="submit"
-                        className="bg-primary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
+                        className="bg-primary text-tertiary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
                     >
                         Submit
                     </button>

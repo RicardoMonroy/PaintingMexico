@@ -9,7 +9,7 @@ class Image extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['artwork_id', 'url'];
+    protected $fillable = ['artwork_id', 'url', 'description'];
 
     public function artwork()
     {

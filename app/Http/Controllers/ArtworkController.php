@@ -44,7 +44,8 @@ class ArtworkController extends Controller
             'videos' => 'sometimes|array',
             'images' => 'sometimes|array', // Valida que las imágenes sean un arreglo
             'images.*' => 'image', // Valida que cada elemento del arreglo sea una imagen
-            'background_color' => 'required|string|max:7'
+            'background_color' => 'required|string|max:7',
+            'section' => 'nullable|string'
         ]);
 
         logger('Validated data:', $validatedData);
@@ -53,6 +54,7 @@ class ArtworkController extends Controller
             $artwork = new Artwork();
             $artwork->user_id = auth()->id();
             $artwork->background_color = $request->input('background_color'); // Asigna el color de fondo
+            $artwork->section = $request->input('section');
 
             // Almacena la imagen 'front' y guarda la URL pública
             if ($request->hasFile('front')) {
@@ -142,10 +144,12 @@ class ArtworkController extends Controller
             'background_color' => 'required|string',
             'translations.*.title' => 'required|string',
             'translations.*.description' => 'required|string',
+            'section' => 'nullable|string'
         ]);
 
         // Actualizar los campos del modelo
         $artwork->background_color = $request->input('background_color');
+        $artwork->section = $request->input('section');
 
         // Actualizar la imagen principal si se ha enviado una nueva
         if ($request->hasFile('front')) {
@@ -157,9 +161,10 @@ class ArtworkController extends Controller
         // Actualizar imágenes asociadas
         // Procesar las imágenes existentes
         if ($request->has('existingImages')) {
-            $existingIds = $request->existingImages; // IDs de las imágenes a mantener
+            // Extraer los IDs de las imágenes existentes
+            $existingIds = array_column($request->existingImages, 'id'); 
             $allImageIds = $artwork->images()->pluck('id')->toArray(); // Obtener todos los IDs de imágenes asociadas
-
+    
             $imagesToDelete = array_diff($allImageIds, $existingIds);
             foreach ($imagesToDelete as $imageId) {
                 $image = Image::find($imageId);
@@ -168,14 +173,22 @@ class ArtworkController extends Controller
                     $correctPath = substr($image->url, strlen('/storage/')); // Esto quita '/storage/' del inicio
                     Storage::disk('public')->delete($correctPath);
                     if (Storage::exists($correctPath)) {
-                        // Storage::delete($correctPath);
-                        // Storage::disk('public')->delete($correctPath);
                         \Log::info('Archivo eliminado: ', ['url' => $correctPath]);
                     } else {
                         \Log::info('Archivo no encontrado, no se pudo eliminar:', ['url' => $correctPath]);
                     }
                     
                     $image->delete();
+                }
+            }
+    
+            // Actualizar las descripciones de las imágenes existentes
+            foreach ($request->existingImages as $imageData) {
+                $image = Image::find($imageData['id']);
+                if ($image) {
+                    $image->description = $imageData['description'];
+                    $image->save();
+                    \Log::info('Imagen actualizada:', ['id' => $imageData['id'], 'description' => $imageData['description']]);
                 }
             }
         }

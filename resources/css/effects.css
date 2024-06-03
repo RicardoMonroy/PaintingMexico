@@ -1,3 +1,12 @@
+.text-justify {
+    text-align: justify;
+}
+
+.break-words {
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
 /* Aumenta el tamaño de los botones de navegación */
 .slick-prev,
 .slick-next {

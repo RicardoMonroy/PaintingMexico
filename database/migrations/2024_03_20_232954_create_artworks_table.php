@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('artworks', function (Blueprint $table) {
             $table->id();
             $table->string('front');
-            $table->string('background_color')->nullable();
+            $table->string('background_color')->nullable();            
             $table->unsignedBigInteger('user_id');
+            $table->enum('section', ['INAH', 'Camino Real'])->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

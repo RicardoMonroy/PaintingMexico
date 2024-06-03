@@ -8,6 +8,7 @@ import { BeatLoader } from 'react-spinners';
 function NewArtworkForm({ closeModal, fetchArtworks }) {
     const [front, setFront] = useState('');
     const [color, setColor] = useState('#F2F2F2');
+    const [section, setSection] = useState('');
     const [artworkData, setArtworkData] = useState({
         front: '',
         translations: {
@@ -69,6 +70,7 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
         const formData = new FormData();
         formData.append('front', front); // Asegúrate de usar 'front' en lugar de 'artworkData.front' si 'front' es el estado que almacena la imagen principal
         formData.append('background_color', color);
+        formData.append('section', section); 
         artworkData.images.forEach((image, index) => {
             formData.append(`images[${index}]`, image);
         });
@@ -179,6 +181,19 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
                 </div>
 
                 <div className="col-span-1 md:col-span-2">
+                    {/* Sección */}
+                    <div className="mb-4">
+                        <label className="block text-primary font-bold mb-2">Section</label>
+                        <select
+                            value={section}
+                            onChange={(e) => setSection(e.target.value)}
+                            className="w-full p-2 border rounded shadow-sm"
+                        >
+                            <option value="">None</option>
+                            <option value="INAH">INAH</option>
+                            <option value="Camino Real">Camino Real</option>
+                        </select>
+                    </div>
                     {/* Videos and Background Color */}
                     <div className="mb-4">
                         <label className="block text-primary font-bold mb-2">Videos</label>
@@ -211,7 +226,7 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
                     {/* Botón de envío y Spinner */}
                     <button
                         type="submit"
-                        className="bg-primary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
+                        className="bg-primary text-tertiary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
                         disabled={loading} // Deshabilita el botón mientras se carga
                     >
                         Submit

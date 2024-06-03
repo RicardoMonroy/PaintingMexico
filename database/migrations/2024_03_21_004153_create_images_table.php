@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('artwork_id');
             $table->string('url');
+            $table->string('description')->nullable();
             $table->timestamps();
 
             $table->foreign('artwork_id')->references('id')->on('artworks')->onDelete('cascade');
