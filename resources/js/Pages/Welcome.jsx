@@ -388,7 +388,7 @@ export default function Welcome(props) {
                                 <img
                                     src={`${selectedSale.cover}`}
                                     alt="Sale Image"
-                                    className="mx-auto w-48 h-48 mb-4"
+                                    className="mx-auto w-850 h-48 mb-4"
                                     style={{ maxWidth: '80%', height: 'auto' }}
                                 />
                                 <h2 className="text-2xl font-bold">
