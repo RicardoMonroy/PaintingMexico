@@ -192,7 +192,7 @@ export default function Welcome(props) {
             <div className="Your-custom-class" parallaxData={plxData}>
                 <div id="gallery" className="py-20 bg-gray-100" data-aos="fade-up">
                     <div className="text-center mb-10">
-                        <div className="inline-flex space-x-4">
+                    <div className="inline-flex space-x-4">
                             <button
                                 onClick={() => handleFilterClick('INAH')}
                                 className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'INAH' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
@@ -212,14 +212,41 @@ export default function Welcome(props) {
                                 Camino Real
                             </button>
                             <button
+                                onClick={() => handleFilterClick('Eventos')}
+                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Eventos' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                            >
+                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Eventos
+                            </button>
+                            <button
+                                onClick={() => handleFilterClick('Educación')}
+                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Educación' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                            >
+                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Educación
+                            </button>
+                            <button
+                                onClick={() => handleFilterClick('Mapas')}
+                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Mapas' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                            >
+                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Mapas
+                            </button>
+                            {/* <button
                                 onClick={() => handleFilterClick('none')}
                                 className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'none' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
                             >
                                 <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
-                                Sin sección
-                            </button>
+                                Otra
+                            </button> */}
                         </div>
                     </div>
                     <div className="container mx-auto px-4">

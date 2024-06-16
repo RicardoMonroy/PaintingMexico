@@ -116,6 +116,7 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
                             type="file"
                             onChange={handleFileChange}
                             className="w-full p-2 border rounded shadow-sm"
+                            required
                         />
                     </div>
                     {/* Carga de múltiples imágenes */}
@@ -141,6 +142,7 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
                             value={artworkData.translations.en.title}
                             onChange={e => handleTranslationChange('en', 'title', e.target.value)}
                             className="w-full p-2 border rounded shadow-sm"
+                            required
                         />
                     </div>
                     <div className="mb-4">
@@ -166,6 +168,7 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
                             value={artworkData.translations.es.title}
                             onChange={e => handleTranslationChange('es', 'title', e.target.value)}
                             className="w-full p-2 border rounded shadow-sm"
+                            required
                         />
                     </div>
                     <div className="mb-4">
@@ -188,10 +191,14 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
                             value={section}
                             onChange={(e) => setSection(e.target.value)}
                             className="w-full p-2 border rounded shadow-sm"
+                            required
                         >
-                            <option value="">None</option>
+                            <option value="" disabled>Select...</option>
                             <option value="INAH">INAH</option>
                             <option value="Camino Real">Camino Real</option>
+                            <option value="Eventos">Eventos</option>
+                            <option value="Educación ">Educación </option>
+                            <option value="Mapas">Mapas</option>
                         </select>
                     </div>
                     {/* Videos and Background Color */}

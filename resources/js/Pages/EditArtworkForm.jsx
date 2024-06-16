@@ -6,6 +6,9 @@ import 'react-quill/dist/quill.snow.css';
 import { BeatLoader } from 'react-spinners';
 
 function EditArtworkForm({ artworkId, closeModal }) {
+    const [front, setFront] = useState('');
+    const [color, setColor] = useState('#F2F2F2');
+    const [section, setSection] = useState('');
     const [artworkData, setArtworkData] = useState({
         front: '',
         background_color: '',
@@ -21,6 +24,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [validationErrors, setValidationErrors] = useState({});
     
 
     useEffect(() => {
@@ -76,8 +80,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
         const updatedExistingImages = [...artworkData.existingImages];
         updatedExistingImages[index].description = value;
         setArtworkData({ ...artworkData, existingImages: updatedExistingImages });
-    };
-    
+    };    
 
     const handleTranslationChange = (language, field, value) => {
         setArtworkData({
@@ -122,8 +125,24 @@ function EditArtworkForm({ artworkId, closeModal }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validación de campos requeridos
+        const errors = {};        
+        if (!artworkData.translations.en.description) {
+            errors.enDescription = 'English description is required';
+        }
+        if (!artworkData.translations.es.description) {
+            errors.esDescription = 'Spanish description is required';
+        }
+
+        if (Object.keys(errors).length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+
         setLoading(true);
         setError('');
+        setValidationErrors({});
 
         if (!artworkId) {
             console.error("No hay información del ID");
@@ -189,8 +208,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
             setError('Error al actualizar el artwork. Por favor, intenta de nuevo.');
             setLoading(false);
             console.error('Error updating artwork:', error);
-        } 
-        
+        }        
     };
     
 
@@ -277,6 +295,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         value={artworkData.translations.en.description}
                         onChange={value => handleTranslationChange('en', 'description', value)}
                     />
+                    {validationErrors.enDescription && <div className="text-red-500">{validationErrors.enDescription}</div>}
                 </div>
 
                 <div>
@@ -298,6 +317,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         value={artworkData.translations.es.description}
                         onChange={value => handleTranslationChange('es', 'description', value)}
                     />
+                    {validationErrors.esDescription && <div className="text-red-500">{validationErrors.esDescription}</div>}
                 </div>
 
                 <div className="col-span-1 md:col-span-2">
@@ -307,9 +327,11 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         onChange={handleSectionChange}
                         className="w-full p-2 border rounded shadow-sm"
                     >
-                        <option value="">None</option>
                         <option value="INAH">INAH</option>
                         <option value="Camino Real">Camino Real</option>
+                        <option value="Eventos">Eventos</option>
+                        <option value="Educación ">Educación </option>
+                        <option value="Mapas">Mapas</option>
                     </select>
 
                     <label className="block text-primary font-bold mb-2">Videos</label>
@@ -340,9 +362,12 @@ function EditArtworkForm({ artworkId, closeModal }) {
                     <button
                         type="submit"
                         className="bg-primary text-tertiary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
+                        disabled={loading}  // Deshabilita el botón mientras está cargando
                     >
-                        Submit
+                        {loading ? <BeatLoader size={8} color="#fff" /> : "Submit"}  {/* Muestra el loader en el botón */}
                     </button>
+                    {loading && <BeatLoader color="#36D7B7" />}
+                    {error && <div className="text-red-500 mt-4">{error}</div>}
                 </div>
             </form>
             {error && <div className="text-red-500 text-center mt-2">{error}</div>}

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('front');
             $table->string('background_color')->nullable();            
             $table->unsignedBigInteger('user_id');
-            $table->enum('section', ['INAH', 'Camino Real'])->nullable();
+            $table->string('section')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

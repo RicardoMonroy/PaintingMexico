@@ -142,72 +142,120 @@ class SaleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        \Log::info('Iniciando la actualización del sale con ID: ' . $id);
-        \Log::info('Datos recibidos:', $request->all());
+        try {
+            \Log::info('Iniciando la actualización del sale con ID: ' . $id);
+            \Log::info('Datos recibidos:', [$request->all()]);
+            \Log::info('IDs de imágenes existentes recibidos:', $request->input('existingGalleries'));
 
-        $sale = Sale::findOrFail($id);
+            $sale = Sale::findOrFail($id);
+            \Log::info('La Sale que se actualiza es: ' . $sale);
 
-        // Verifica si hay un archivo de cover y procesa la carga
-        if ($request->hasFile('cover')) {
-            // Almacena el archivo en el disco 'public' y guarda la ruta en la base de datos
-            $coverPath = $request->file('cover')->store('sales', 'public');
-            $sale->cover = Storage::url($coverPath);
-            $sale->save();
+            // Valida los datos de entrada
+            $validatedData = $request->validate([
+                'translations.*.title' => 'required|string',
+                'translations.*.description' => 'required|string'
+            ]);
+            \Log::info('Validación finalizada');
 
-            \Log::info('Cover actualizado exitosamente.', ['id' => $sale->id, 'cover' => $sale->cover]);
-        } else {
-            \Log::info('No se recibió nuevo archivo de cover.');
-        }
-
-        $translations = json_decode($request->input('translations'), true);
-        foreach ($translations as $locale => $translation) {
-            $trans = $sale->saleTranslates()->where('locale', $locale)->first();
-            if ($trans) {
-                $trans->title = $translation['title'];
-                $trans->description = $translation['description'];
-                $trans->save();
+            if ($request->hasFile('cover')) {
+                $coverPath = $request->file('cover')->store('sales', 'public');
+                $sale->cover = Storage::url($coverPath);
+                \Log::info('Cover actualizado exitosamente.', ['id' => $sale->id, 'cover' => $sale->cover]);
             } else {
-                $sale->saleTranslates()->create([
-                    'locale' => $locale,
-                    'title' => $translation['title'],
-                    'description' => $translation['description'],
-                ]);
+                \Log::info('No se recibió nuevo archivo de cover.');
             }
-        }
 
-        // Si se recibe una nueva galería, primero elimina las anteriores
-        if ($request->has('updateGalleries') && $request->updateGalleries == 'true') {
-            // Asumiendo que `sale_id` es la columna que relaciona las galerías con el sale
-            SaleGallery::where('sales_idsales', $id)->delete();
-            if ($request->hasFile('galleries')) {
-                foreach ($request->file('galleries') as $galleryFile) {
-                    $galleryPath = $galleryFile->store('sales_gallery', 'public');
-                    $sale->saleGalleries()->create([
-                        'url' => Storage::url($galleryPath),
+            if ($request->has('existingGalleries')) {
+                $existingGalleries = $request->input('existingGalleries');
+                \Log::info('existingGalleries recibidos:', [$existingGalleries]);
+
+                $existingIds = array_column($existingGalleries, 'id');
+                $allGalleryIds = $sale->saleGalleries()->pluck('id')->toArray();
+
+                $galleriesToDelete = array_diff($allGalleryIds, $existingIds);
+                foreach ($galleriesToDelete as $galleryId) {
+                    $gallery = SaleGallery::find($galleryId);
+                    if ($gallery) {
+                        \Log::info('Ruta del archivo a eliminar:', ['url' => $gallery->url]);
+                        $correctPath = substr($gallery->url, strlen('/storage/'));
+                        Storage::disk('public')->delete($correctPath);
+                        if (!Storage::exists($correctPath)) {
+                            \Log::info('Archivo eliminado:', ['url' => $correctPath]);
+                        } else {
+                            \Log::info('Archivo no encontrado, no se pudo eliminar:', ['url' => $correctPath]);
+                        }
+                        $gallery->delete();
+                    }
+                }
+
+                foreach ($existingGalleries as $galleryData) {
+                    $gallery = SaleGallery::find($galleryData['id']);
+                    if ($gallery) {
+                        $gallery->save();
+                        \Log::info('Galería actualizada:', ['id' => $galleryData['id']]);
+                    }
+                }
+            }
+
+            if ($request->hasFile('newGalleries')) {
+                foreach ($request->file('newGalleries') as $file) {
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $galleryPath = $file->store('sales_gallery', 'public');
+                        $sale->saleGalleries()->create(['url' => Storage::url($galleryPath)]);
+                        \Log::info('Se añadió la galería:', ['path' => $galleryPath]);
+                    }
+                }
+            }
+
+            if ($request->has('urls')) {
+                $urls = $request->input('urls');
+                \Log::info('urls recibidos:', [$urls]);
+    
+                // Asegúrate de que urls sea un array
+                if (!is_array($urls)) {
+                    throw new \Exception('expected urls to be an array');
+                }
+    
+                $sale->saleURLs()->delete();
+                foreach ($urls as $url) {
+                    $sale->saleURLs()->create([
+                        'url' => $url['url'],
+                        'store' => $url['store'],
                     ]);
                 }
             }
+
+            // Actualizar traducciones
+            if ($request->has('translations')) {
+                $translations = json_decode($request->input('translations'), true);
+                \Log::info('Traducciones después de json_decode:', [$translations]);
+    
+                foreach ($translations as $locale => $data) {
+                    $translation = $sale->saleTranslates()->where('locale', $locale)->first();
+                    if ($translation) {
+                        $translation->update($data);
+                    } else {
+                        $sale->saleTranslates()->create([
+                            'locale' => $locale,
+                            'title' => $data['title'],
+                            'description' => $data['description'],
+                        ]);
+                    }
+                }
+            }
+
+            $sale->save();
+
+            return response()->json($sale);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json($e->errors(), 422);
+        } catch (\Exception $e) {
+            \Log::error('Error al actualizar la información:', ['exception' => $e]);
+            return response()->json(['error' => 'Error al actualizar la información.'], 500);
         }
-
-        if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('sales', 'public');
-            $sale->cover = Storage::url($coverPath);
-        }
-
-        // Actualizar URLs
-        // Primero elimina las URLs existentes
-        $sale->saleURLs()->delete();
-
-        // Luego añade las nuevas URLs
-        foreach ($request->urls as $url) {
-            $sale->saleURLs()->create([
-                'url' => $url['url'],
-                'store' => $url['store'],
-            ]);
-        }
-
-        return response()->json($sale);        
     }
+
 
     /**
      * Remove the specified resource from storage.

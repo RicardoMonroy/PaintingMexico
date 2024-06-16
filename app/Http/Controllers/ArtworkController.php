@@ -133,7 +133,7 @@ class ArtworkController extends Controller
     {
         \Log::info('Iniciando la actualización del artwork con ID: ' . $id);
         \Log::info('Datos recibidos:', $request->all());
-        \Log::info('IDs de imágenes existentes recibidos:', $request->input('existingImages'));
+        // \Log::info('IDs de imágenes existentes recibidos:', $request->input('existingImages'));
 
 
         // Buscar el artwork por ID
@@ -143,7 +143,6 @@ class ArtworkController extends Controller
         $validatedData = $request->validate([
             'background_color' => 'required|string',
             'translations.*.title' => 'required|string',
-            'translations.*.description' => 'required|string',
             'section' => 'nullable|string'
         ]);
 
