@@ -29,6 +29,7 @@ export default function Welcome(props) {
     const [isSaleModal, setIsSaleModal] = useState(false);
     const [currentSection, setCurrentSection] = useState('INAH');
     const [filteredArtworks, setFilteredArtworks] = useState(props.artworks);
+    const [selectedFilter, setSelectedFilter] = useState('none');
 
     const { language, setLanguage } = useLanguage();
     const translations = language === 'en' ? en : es;
@@ -149,6 +150,11 @@ export default function Welcome(props) {
         }
     };
 
+    const handleFilterClick = (section) => {
+        setSelectedFilter(section);
+        filterArtworksBySection(section);
+    };
+
     return (
         <div id="home" >
             {/* Navbar */}
@@ -164,46 +170,6 @@ export default function Welcome(props) {
                     </div>
                 </div>
             </nav>
-            {/* <nav className="bg-gray-200 p-4 fixed top-0 left-0 w-full z-50">
-                <div className="flex justify-between items-center w-full px-2 lg:px-4">
-                    <div className="text-lg font-bold">
-                        <button onClick={() => scrollToSection('home')} className="text-2xl font-semibold text-primary">Painting México</button>
-                    </div>
-                    <button
-                        className="inline-flex items-center justify-center p-2 rounded-md text-primary hover:text-secondary lg:hidden"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    >
-                        <svg className="h-6 w-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                            <path d={!isMenuOpen ? "M4 6h16M4 12h16M4 18h16" : "M6 18L18 6M6 6l12 12"} />
-                        </svg>
-                    </button>
-                    <div className={`absolute lg:relative top-16 lg:top-0 right-0 lg:right-0 w-full lg:w-auto bg-gray-200 lg:bg-transparent z-20 transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0 flex flex-col lg:flex-row items-center lg:space-x-6`}>
-                        {isMenuOpen && (
-                            <button
-                            onClick={() => setIsMenuOpen(false)}
-                            className="p-4 lg:hidden absolute top-4 right-4"
-                            >
-                            </button>
-                        )}
-                        <button onClick={() => scrollToSection('gallery')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.galeria}</button>
-                        <button onClick={() => scrollToSection('blog')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.blog}</button>
-                        <button onClick={() => scrollToSection('artists')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.artistas}</button>
-                        <button onClick={() => scrollToSection('sales')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.sales}</button>
-                        <button onClick={() => scrollToSection('contact')} className="text-primary hover:text-secondary py-2 lg:py-0">{translations.contacto}</button>
-                        <InertiaLink href="/login" className="bg-gray-100 text-primary border border-gray-300 rounded hover:border-secondary focus:outline-none focus:border-secondary px-4 py-2 lg:py-0">
-                            {translations.iniciarSesion}
-                        </InertiaLink>
-                        <select 
-                            onChange={(e) => changeLanguage(e.target.value)} 
-                            defaultValue={language}
-                            className="bg-gray-100 text-primary border border-gray-300 rounded hover:border-secondary focus:outline-none focus:border-secondary px-8 py-2 lg:py-0"
-                        >
-                            <option value="en">English</option>
-                            <option value="es">Español</option>
-                        </select>
-                    </div>
-                </div>
-            </nav> */}
 
             {/* Sección de Bienvenida */}
             <div className="relative text-center animate__animated animate__zoomIn">
@@ -220,41 +186,41 @@ export default function Welcome(props) {
                     <p className="mb-4 text font-primary">{translations.noInfoAvailable}:</p>
                 )}
             </div>
-            
-
-            {/* Nav Items as Buttons */}
-            <div className="text-center space-y-4 mt-10 mb-10">
-                <button onClick={() => scrollToSection('gallery')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                    {translations.artwork}
-                </button>
-                <button onClick={() => scrollToSection('sales')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                    {translations.sales}
-                </button>
-                <button onClick={() => scrollToSection('blog')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                    {translations.blog}
-                </button>
-                <button onClick={() => scrollToSection('artists')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                    {translations.artistas}
-                </button>                
-                <button onClick={() => scrollToSection('contact')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                    {translations.contacto}
-                </button>
-            </div>
 
             
             {/* Galería */}
             <div className="Your-custom-class" parallaxData={plxData}>
                 <div id="gallery" className="py-20 bg-gray-100" data-aos="fade-up">
                     <div className="text-center mb-10">
-                        <button onClick={() => filterArtworksBySection('INAH')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                            INAH
-                        </button>
-                        <button onClick={() => filterArtworksBySection('Camino Real')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                            Camino Real
-                        </button>
-                        <button onClick={() => filterArtworksBySection('none')} className="bg-tertiary text-button-text font-bold py-4 px-8 rounded-md text-lg hover:bg-button-hover transition duration-300">
-                            Sin sección
-                        </button>
+                        <div className="inline-flex space-x-4">
+                            <button
+                                onClick={() => handleFilterClick('INAH')}
+                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'INAH' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                            >
+                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                INAH
+                            </button>
+                            <button
+                                onClick={() => handleFilterClick('Camino Real')}
+                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Camino Real' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                            >
+                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Camino Real
+                            </button>
+                            <button
+                                onClick={() => handleFilterClick('none')}
+                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'none' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                            >
+                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Sin sección
+                            </button>
+                        </div>
                     </div>
                     <div className="container mx-auto px-4">
                         {filteredArtworks.length > 0 ? (
@@ -269,8 +235,8 @@ export default function Welcome(props) {
                                                 alt={artwork.translations[0]?.id || "Art image"}
                                                 onClick={() => openArtworkModal(artwork)}
                                             />
-                                            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 flex justify-center items-center transition-opacity duration-300">
-                                                <span className="text-white text-center px-4">{artwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}</span>
+                                            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 flex justify-center items-center transition-opacity duration-300 hover:text-3xl">
+                                                <span className="text-white text-center px-4 ">{artwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}</span>
                                             </div>
                                         </div>
                                     );
