@@ -4,11 +4,11 @@ import axios from 'axios';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { BeatLoader } from 'react-spinners';
+import { useLanguage } from '@/contexts/LanguageContext';
+import en from '../translations/en.json';
+import es from '../translations/es.json';
 
 function EditArtworkForm({ artworkId, closeModal }) {
-    const [front, setFront] = useState('');
-    const [color, setColor] = useState('#F2F2F2');
-    const [section, setSection] = useState('');
     const [artworkData, setArtworkData] = useState({
         front: '',
         background_color: '',
@@ -17,23 +17,26 @@ function EditArtworkForm({ artworkId, closeModal }) {
             es: { title: '', description: '' },
         },
         images: [],
-        existingImages: [], // Imágenes cargadas inicialmente del servidor
-        newImages: [], // Nuevas imágenes añadidas por el usuario
+        existingImages: [],
+        newImages: [],
         videos: [],
         section: ''
     });
+    const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [validationErrors, setValidationErrors] = useState({});
-    
+
+    const { language } = useLanguage();
+    const translations = language === 'en' ? en : es;
 
     useEffect(() => {
         const fetchArtworkData = async () => {
             try {
                 const response = await axios.get(`${config.API_URL}/artworks/${artworkId}`);
                 const artwork = response.data;
-                console.log(artwork);
-                
+                console.log("Artwork encontrado: ", artwork);
+
                 setArtworkData({
                     front: artwork.front,
                     background_color: artwork.background_color,
@@ -41,17 +44,28 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         acc[translation.locale] = { title: translation.title, description: translation.description };
                         return acc;
                     }, {}),
-                    images: artwork.images.map(img => img.url), // Asegúrate de usar el campo correcto
-                    videos: artwork.videos.map(video => video.url), // Asegúrate de usar el campo correcto
-                    existingImages: artwork.images || [], // Asegúrate de que siempre asignes un arreglo
-                    section: artwork.section || ''
+                    images: artwork.images.map(img => img.url),
+                    videos: artwork.videos.map(video => video.url),
+                    existingImages: artwork.images || [],
+                    section: artwork.section_id || ''
                 });
             } catch (error) {
                 console.error('Error fetching artwork data:', error);
             }
         };
-    
+
+        const fetchSections = async () => {
+            try {
+                const response = await axios.get(`${config.API_URL}/sections`);
+                setSections(response.data);
+                console.log("Sections existentes: ", response.data)
+            } catch (error) {
+                console.error('Error fetching sections:', error);
+            }
+        };
+
         fetchArtworkData();
+        fetchSections();
     }, [artworkId]);
 
     const handleFileChange = (e) => {
@@ -66,21 +80,18 @@ function EditArtworkForm({ artworkId, closeModal }) {
         } else {
             console.error("No files selected or files are not accessible");
         }
-    };    
+    };
 
     const handleRemoveImage = (index) => {
-        console.log('Index to remove:', index);
-        // console.log('Current images:', artworkData.existingImages);    
-        const updatedExistingImages = artworkData.existingImages.filter((_, idx) => idx !== index);    
-        // console.log('Updated images:', updatedExistingImages);
+        const updatedExistingImages = artworkData.existingImages.filter((_, idx) => idx !== index);
         setArtworkData({ ...artworkData, existingImages: updatedExistingImages });
-    };    
+    };
 
     const handleImageDescriptionChange = (index, value) => {
         const updatedExistingImages = [...artworkData.existingImages];
         updatedExistingImages[index].description = value;
         setArtworkData({ ...artworkData, existingImages: updatedExistingImages });
-    };    
+    };
 
     const handleTranslationChange = (language, field, value) => {
         setArtworkData({
@@ -126,8 +137,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validación de campos requeridos
-        const errors = {};        
+        const errors = {};
         if (!artworkData.translations.en.description) {
             errors.enDescription = 'English description is required';
         }
@@ -149,45 +159,34 @@ function EditArtworkForm({ artworkId, closeModal }) {
             return;
         }
         console.log("el ID a actualizar es:", artworkId);
-        
+
         const formData = new FormData();
         formData.append('background_color', artworkData.background_color);
         formData.append('section', artworkData.section);
-        
-        // Si estás actualizando una imagen o un archivo, asegúrate de añadirlo solo si el usuario seleccionó un nuevo archivo
+
         if (artworkData.front instanceof File) {
             formData.append('front', artworkData.front);
-            console.log("Las imágenes son:", artworkData.front);
         }
 
-        // Agregar imágenes existentes que se mantienen
         if (artworkData.existingImages && artworkData.existingImages.length > 0) {
             artworkData.existingImages.forEach((image, index) => {
-                if (image.id) { // Verifica que la imagen tiene un id
-                    formData.append(`existingImages[${index}][id]`, image.id.toString()); // Asegúrate de usar image.id
+                if (image.id) {
+                    formData.append(`existingImages[${index}][id]`, image.id.toString());
                     formData.append(`existingImages[${index}][description]`, image.description || '');
-                    console.log('Se añaden al FormData los IDs de las imágenes:', image.id);
-                } else {
-                    console.error('La imagen no tiene un id:', image);
                 }
             });
         }
-        
 
-        // Agregar nuevas imágenes
         if (artworkData.newImages && artworkData.newImages.length > 0) {
             artworkData.newImages.forEach((image, index) => {
                 formData.append(`newImages[${index}]`, image);
             });
-            console.log('New Images:', artworkData.newImages);
-        }        
-        
-        // Para los videos
+        }
+
         artworkData.videos.forEach((video, index) => {
             formData.append(`videos[${index}]`, video);
-            console.log("Los videos son:", video);
         });
-        
+
         Object.keys(artworkData.translations).forEach(locale => {
             formData.append(`translations[${locale}][title]`, artworkData.translations[locale].title);
             formData.append(`translations[${locale}][description]`, artworkData.translations[locale].description);
@@ -195,7 +194,6 @@ function EditArtworkForm({ artworkId, closeModal }) {
 
         formData.append('_method', 'PUT');
 
-    
         try {
             await axios.post(`${config.API_URL}/artworks/${artworkId}`, formData, {
                 headers: {
@@ -208,9 +206,8 @@ function EditArtworkForm({ artworkId, closeModal }) {
             setError('Error al actualizar el artwork. Por favor, intenta de nuevo.');
             setLoading(false);
             console.error('Error updating artwork:', error);
-        }        
+        }
     };
-    
 
     return (
         <div className="p-6 max-w-3xl mx-auto bg-card rounded-lg shadow-md">
@@ -221,7 +218,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         Front Image
                     </label>
                     <div className="mb-4">
-                        <img src={artworkData.front} alt="Front" className="-full h-auto object-cover rounded-lg shadow-md" />
+                        <img src={artworkData.front} alt="Front" className="w-full h-auto object-cover rounded-lg shadow-md" />
                     </div>
                     <input
                         type="file"
@@ -255,26 +252,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                             className="w-full p-2 border rounded shadow-sm"
                         />
                     </div>
-                    {/* <div className="mb-4">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                            {artworkData.existingImages.map((img, index) => (
-                                <div key={img.id || `image-${index}`} className="inline-block relative">
-                                    <img src={img.url} alt={`Image ${index}`} className="w-full h-auto object-cover rounded-lg shadow-md" />
-                                    <button type="button" onClick={() => handleRemoveImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
-                                        X
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                        <br />
-                        <input
-                            type="file"
-                            multiple
-                            onChange={handleAddImage}
-                            className="w-full p-2 border rounded shadow-sm"
-                        />
-                    </div> */}
-                </div>                
+                </div>
 
                 <div>
                     <label className="block text-primary font-bold mb-2">
@@ -321,17 +299,18 @@ function EditArtworkForm({ artworkId, closeModal }) {
                 </div>
 
                 <div className="col-span-1 md:col-span-2">
-                <label className="block text-primary font-bold mb-2">Section</label>
+                    <label className="block text-primary font-bold mb-2">Section</label>
                     <select
                         value={artworkData.section}
                         onChange={handleSectionChange}
                         className="w-full p-2 border rounded shadow-sm"
                     >
-                        <option value="INAH">INAH</option>
-                        <option value="Camino Real">Camino Real</option>
-                        <option value="Eventos">Eventos</option>
-                        <option value="Educación ">Educación </option>
-                        <option value="Mapas">Mapas</option>
+                        <option value="" disabled>Select...</option>
+                        {sections && sections.length > 0 && sections.map((sec) => (
+                                <option key={sec.id} value={sec.id}>
+                                    {sec.translations.find(t => t.locale === language)?.name || sec.translations[0]?.name}
+                                </option>
+                            ))}
                     </select>
 
                     <label className="block text-primary font-bold mb-2">Videos</label>
@@ -355,16 +334,16 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         value={artworkData.background_color}
                         onChange={handleColorChange}
                         className="w-full h-12 p-2 border rounded shadow-sm"
-                    />                    
+                    />
                 </div>
 
                 <div className="col-span-2">
                     <button
                         type="submit"
                         className="bg-primary text-tertiary text-button.text hover:bg-button.hover font-bold py-2 px-4 rounded float-right"
-                        disabled={loading}  // Deshabilita el botón mientras está cargando
+                        disabled={loading}
                     >
-                        {loading ? <BeatLoader size={8} color="#fff" /> : "Submit"}  {/* Muestra el loader en el botón */}
+                        {loading ? <BeatLoader size={8} color="#fff" /> : "Submit"}
                     </button>
                     {loading && <BeatLoader color="#36D7B7" />}
                     {error && <div className="text-red-500 mt-4">{error}</div>}

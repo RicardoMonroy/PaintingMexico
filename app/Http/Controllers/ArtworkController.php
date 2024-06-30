@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Artwork;
+use App\Models\Section;
 use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +21,11 @@ class ArtworkController extends Controller
             $query->where('locale', $locale);
         }, 'user'])->orderByDesc('created_at')->get();
 
-        return response()->json($artworks);
+        $sections = Section::with(['translations' => function ($query) use ($locale) {
+            $query->where('locale', $locale);
+        }])->orderByDesc('created_at')->get();
+
+        return response()->json(['artworks' => $artworks, 'sections' => $sections]);
     }
 
     /**
@@ -45,7 +50,7 @@ class ArtworkController extends Controller
             'images' => 'sometimes|array', // Valida que las imágenes sean un arreglo
             'images.*' => 'image', // Valida que cada elemento del arreglo sea una imagen
             'background_color' => 'required|string|max:7',
-            'section' => 'nullable|string'
+            'section' => 'nullable|exists:sections,id'
         ]);
 
         logger('Validated data:', $validatedData);
@@ -54,7 +59,7 @@ class ArtworkController extends Controller
             $artwork = new Artwork();
             $artwork->user_id = auth()->id();
             $artwork->background_color = $request->input('background_color'); // Asigna el color de fondo
-            $artwork->section = $request->input('section');
+            $artwork->section_id = $request->input('section');
 
             // Almacena la imagen 'front' y guarda la URL pública
             if ($request->hasFile('front')) {
@@ -143,12 +148,12 @@ class ArtworkController extends Controller
         $validatedData = $request->validate([
             'background_color' => 'required|string',
             'translations.*.title' => 'required|string',
-            'section' => 'nullable|string'
+            'section' => 'nullable|exists:sections,id'
         ]);
 
         // Actualizar los campos del modelo
         $artwork->background_color = $request->input('background_color');
-        $artwork->section = $request->input('section');
+        $artwork->section_id = $request->input('section');
 
         // Actualizar la imagen principal si se ha enviado una nueva
         if ($request->hasFile('front')) {

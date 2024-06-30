@@ -7,6 +7,7 @@ use Inertia\Inertia;
 
 use App\Models\Info;
 use App\Models\Artwork;
+use App\Models\Section;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Profile;
@@ -26,7 +27,12 @@ use App\Http\Controllers\ArtworkController;
 
 Route::get('/', function () {
     $info = Info::first();    
-    $artworks = Artwork::with(['translations', 'images', 'videos'])
+    $artworks = Artwork::with(['translations', 'images', 'videos', 'section'])
+                        ->orderBy('created_at', 'desc')
+                        ->take(15)
+                        ->get();
+    
+    $sections = Section::with(['translations'])
                         ->orderBy('created_at', 'desc')
                         ->take(15)
                         ->get();
@@ -45,6 +51,7 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'info' => $info,
         'artworks' => $artworks, // Pasar obras de arte a la vista
+        'sections' => $sections, // Pasar secciones a la vista
         'posts' => $posts,
         'sales' => $sales,
         'users' => $users,
@@ -64,13 +71,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Usuarios');
     })->name('usuarios');
 
-    Route::get('/posts', function() {
-        return Inertia::render('Posts');
-    })->name('posts');
+    // Route::get('/posts', function() {
+    //     return Inertia::render('Posts');
+    // })->name('posts');
 
     Route::get('/artworks', function() {
         return Inertia::render('Artworks');
     })->name('artworks');
+
+    Route::get('/sections', function() {
+        return Inertia::render('Sections');
+    })->name('sections');
 
     Route::get('/sales', function() {
         return Inertia::render('Sales');

@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ArtworkController;
+use App\Http\Controllers\SectionController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InfoController;
 
@@ -29,6 +30,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Route::post('/artworks/{id}', [ArtworkController::class, 'update']);
     Route::put('/artworks/{id}', [ArtworkController::class, 'update']);
     Route::delete('/artworks/{artwork}', [ArtworkController::class, 'destroy']);
+
+    Route::get('/sections', [SectionController::class, 'index']);
+    Route::get('/sections/{section}', [SectionController::class, 'show']);
+    Route::post('/sections', [SectionController::class, 'store']);
+    Route::put('/sections/{id}', [SectionController::class, 'update']);
+    Route::delete('/sections/{section}', [SectionController::class, 'destroy']);
 
     Route::get('/sales', [SaleController::class, 'index']);
     Route::get('/sales/{sale}', [SaleController::class, 'show']);

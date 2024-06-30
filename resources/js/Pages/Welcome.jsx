@@ -16,7 +16,7 @@ import enFlag from '../../assets/en.png';
 import esFlag from '../../assets/es.png';
 import loginIcon from '../../assets/login.png';
 
-export default function Welcome(props) {
+export default function Welcome({ info, artworks, sections, posts, sales, users }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [selectedArtwork, setSelectedArtwork] = useState(null);
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
@@ -27,8 +27,7 @@ export default function Welcome(props) {
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [selectedSale, setSelectedSale] = useState(null);
     const [isSaleModal, setIsSaleModal] = useState(false);
-    const [currentSection, setCurrentSection] = useState('INAH');
-    const [filteredArtworks, setFilteredArtworks] = useState(props.artworks);
+    const [filteredArtworks, setFilteredArtworks] = useState(artworks);
     const [selectedFilter, setSelectedFilter] = useState('none');
 
     const { language, setLanguage } = useLanguage();
@@ -36,27 +35,27 @@ export default function Welcome(props) {
 
     const plxData = [
         {
-          start: 0,          // Cuando el elemento está en la parte superior de la ventana
-          end: 800,          // Finaliza la animación 500px después
-          properties: [
-            {
-              startValue: 0, // Comienza con una opacidad de 0 (completamente invisible)
-              endValue: 1,   // Termina con una opacidad de 1 (completamente visible)
-              property: "opacity"
-            },
-            {
-              startValue: 100, // Empieza 100px abajo
-              endValue: 0,     // Mueve el elemento a su posición original
-              property: "translateY"
-            }
-          ]
+            start: 0,
+            end: 800,
+            properties: [
+                {
+                    startValue: 0,
+                    endValue: 1,
+                    property: "opacity"
+                },
+                {
+                    startValue: 100,
+                    endValue: 0,
+                    property: "translateY"
+                }
+            ]
         }
     ];
       
     useEffect(() => {
         AOS.init({
-            duration: 1200, // Duración de la animación
-            once: false, // Para que la animación se ejecute solo una vez por elemento
+            duration: 1200,
+            once: false,
         });
     }, []);
 
@@ -64,25 +63,25 @@ export default function Welcome(props) {
         dots: true,
         infinite: true,
         speed: 500,
-        slidesToShow: 3, // Muestra 3 slides a la vez
-        slidesToScroll: 1, // Desplaza 3 slides a la vez
-        centerMode: true, // Añade esto para centrar slides y mostrar espacio a los lados
-        centerPadding: '20px', // Añade esto para más espacio alrededor de los slides
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        centerMode: true,
+        centerPadding: '20px',
         responsive: [
             {
-                breakpoint: 1024, // En dispositivos de menos de 1024px
+                breakpoint: 1024,
                 settings: {
-                    slidesToShow: 2, // Muestra 2 slides
-                    slidesToScroll: 2, // Desplaza 2 slides
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
                     infinite: true,
                     dots: true
                 }
             },
             {
-                breakpoint: 600, // En dispositivos de menos de 600px
+                breakpoint: 600,
                 settings: {
-                    slidesToShow: 1, // Muestra 1 slide
-                    slidesToScroll: 1 // Desplaza 1 slide
+                    slidesToShow: 1,
+                    slidesToScroll: 1
                 }
             }
         ]
@@ -144,9 +143,9 @@ export default function Welcome(props) {
     
     const filterArtworksBySection = (section) => {
         if (section === 'none') {
-            setFilteredArtworks(props.artworks.filter(artwork => !artwork.section));
+            setFilteredArtworks(artworks);
         } else {
-            setFilteredArtworks(props.artworks.filter(artwork => artwork.section === section));
+            setFilteredArtworks(artworks.filter(artwork => artwork.section_id === section));
         }
     };
 
@@ -156,7 +155,7 @@ export default function Welcome(props) {
     };
 
     return (
-        <div id="home" >
+        <div id="home">
             {/* Navbar */}
             <nav className="bg-transparent p-4 fixed top-0 left-0 w-full z-50 flex justify-between items-center">
                 <div></div>
@@ -173,9 +172,9 @@ export default function Welcome(props) {
 
             {/* Sección de Bienvenida */}
             <div className="relative text-center animate__animated animate__zoomIn">
-                {props.info ? (
+                {info ? (
                     <div className="relative">
-                        <img src={props.info.banner} alt="Banner" className="w-full h-auto mx-auto" />
+                        <img src={info.banner} alt="Banner" className="w-full h-auto mx-auto" />
                         <div className="absolute inset-0 flex items-center justify-center">
                             <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold" style={{ marginTop: 'calc(3vh / 3)' }}>
                                 Painting México
@@ -187,66 +186,23 @@ export default function Welcome(props) {
                 )}
             </div>
 
-            
             {/* Galería */}
             <div className="Your-custom-class" parallaxData={plxData}>
                 <div id="gallery" className="py-20 bg-gray-100" data-aos="fade-up">
                     <div className="text-center mb-10">
-                    <div className="inline-flex space-x-4">
-                            <button
-                                onClick={() => handleFilterClick('INAH')}
-                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'INAH' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
-                            >
-                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                INAH
-                            </button>
-                            <button
-                                onClick={() => handleFilterClick('Camino Real')}
-                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Camino Real' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
-                            >
-                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Camino Real
-                            </button>
-                            <button
-                                onClick={() => handleFilterClick('Eventos')}
-                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Eventos' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
-                            >
-                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Eventos
-                            </button>
-                            <button
-                                onClick={() => handleFilterClick('Educación')}
-                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Educación' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
-                            >
-                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Educación
-                            </button>
-                            <button
-                                onClick={() => handleFilterClick('Mapas')}
-                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'Mapas' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
-                            >
-                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Mapas
-                            </button>
-                            {/* <button
-                                onClick={() => handleFilterClick('none')}
-                                className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === 'none' ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
-                            >
-                                <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Otra
-                            </button> */}
+                        <div className="inline-flex space-x-4">
+                            {sections.map(section => (
+                                <button
+                                    key={section.id}
+                                    onClick={() => handleFilterClick(section.id)}
+                                    className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === section.id ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                                >
+                                    <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                    {section.translations.find(t => t.locale === language)?.name || 'Section'}
+                                </button>
+                            ))}
                         </div>
                     </div>
                     <div className="container mx-auto px-4">
@@ -263,7 +219,7 @@ export default function Welcome(props) {
                                                 onClick={() => openArtworkModal(artwork)}
                                             />
                                             <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 flex justify-center items-center transition-opacity duration-300 hover:text-3xl">
-                                                <span className="text-white text-center px-4 ">{artwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}</span>
+                                                <span className="text-white text-center px-4">{artwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}</span>
                                             </div>
                                         </div>
                                     );
@@ -351,15 +307,13 @@ export default function Welcome(props) {
                 </div>
             )}
 
-
             {/* Ventas */}
             <div id="sales" className="py-20 bg-gray-100" data-aos="fade-up">
                 <h2 className="text-3xl font-bold text-center">{translations.sales}</h2><br />
                 <div className="container mx-auto px-4">
-                    {props.sales.length > 0 ? (
+                    {sales.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {props.sales.map((sale, index) => {
-                                // Asegúrate de que 'translates' es un array antes de llamar a 'find'
+                            {sales.map((sale, index) => {
                                 const saleTranslation = sale.sale_translates.find(t => t.locale === language);
                                 return (
                                     <div key={index} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" data-aos="zoom-in" onClick={() => openSaleProfileModal(sale)}>
@@ -428,7 +382,6 @@ export default function Welcome(props) {
                         </div>
                     )}
                     {/* TODO: terminar galerias */}
-
                 </div>                
             </div>
 
@@ -440,69 +393,15 @@ export default function Welcome(props) {
                         <p>Tu navegador no soporta iFrame.</p>
                     </iframe>
                 </div>
-
-                {/* <div className="container mx-auto px-4">
-                    {props.posts.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {props.posts.map((post) => {
-                                const postTranslation = post.translations.find(t => t.locale === language);
-                                return (
-                                    <div key={post.id} className="overflow-hidden rounded-lg shadow-lg" data-aos="zoom-in" onClick={() => openPostModal(post)}>
-                                        <img
-                                            className="w-full h-48 object-cover"
-                                            src={post.cover}
-                                            alt={postTranslation?.title || 'Cover image'}
-                                        />
-                                        <div className="px-6 py-4">
-                                            <div className="font-bold text-xl mb-2">{postTranslation?.title || 'Título no disponible'}</div>
-                                            <p className="text-gray-700 text-base">
-                                                {post.user?.name || 'Autor no disponible'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    ) : (
-                        <p className="text-center">{translations.noInfoAvailable}</p>
-                    )}
-                </div>
-                {isPostModalOpen && selectedPost && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
-                        <div className="bg-white p-5 rounded-lg max-w-3xl w-full overflow-y-auto" style={{ maxHeight: '80vh' }}>
-                            {selectedPost.cover && (
-                                <img 
-                                    src={selectedPost.cover} 
-                                    alt="Cover Image" 
-                                    className="mx-auto w-70% rounded mb-4"
-                                    style={{ maxWidth: '70%', height: 'auto' }}
-                                />
-                            )}
-                            <h2 className="text-2xl font-bold">
-                                {selectedPost.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
-                            </h2>
-                            <div className="mt-2" dangerouslySetInnerHTML={{
-                                __html: selectedPost.translations.find(t => t.locale === language)?.content || 'Descripción no disponible'
-                            }}>
-                            </div>
-                            <p className="mt-4">Publicado por: {selectedPost.user.name}</p>
-                            <p className="mt-1">Fecha de publicación: {new Date(selectedPost.created_at).toLocaleDateString(language)}</p>
-                            <button onClick={closePostModal} className="mt-4 px-4 py-2 bg-secondary text-white rounded">
-                                {translations.btnCerrar}
-                            </button>
-                        </div>
-                    </div>
-                )} */}
             </div>            
 
             {/* Artistas */}
             <div id="artists" className="py-20 bg-gray-100" data-aos="fade-up">
                 <h2 className="text-3xl font-bold text-center">{translations.artistas}</h2><br />
                 <div className="container mx-auto px-4">
-                    {props.users.length > 0 ? (
+                    {users.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {props.users.filter(user => user.profile).map((user) => {
-                                // Asegúrate de que 'translates' es un array antes de llamar a 'find'
+                            {users.filter(user => user.profile).map((user) => {
                                 const profileTranslation = user.profile.translates?.find(t => t.locale === language);
                                 return (
                                     <div key={user.id} className="overflow-hidden rounded-lg shadow-lg cursor-pointer" data-aos="zoom-in" onClick={() => openProfileModal(user)}>
@@ -513,7 +412,6 @@ export default function Welcome(props) {
                                         />
                                         <div className="px-6 py-4">
                                             <div className="font-bold text-xl mb-2">{user.name}</div>
-                                            {/* Aquí utilizamos dangerouslySetInnerHTML para renderizar el HTML */}
                                             <p className="text-gray-700 text-base" dangerouslySetInnerHTML={{ __html: profileTranslation?.description || 'Descripción no disponible' }}></p>
                                         </div>
                                     </div>
@@ -557,10 +455,10 @@ export default function Welcome(props) {
             <div id="contact" className="py-20 bg-gray-100" data-aos="fade-up">
                 <h2 className="text-3xl font-bold text-center">{translations.contacto}</h2>
                 <div className="mt-8 text-center">
-                    {props.info ? (                            
+                    {info ? (                            
                         <>
-                            <p className="mb-4 text font-primary">{translations.mensajeContacto}:</p><a href={`mailto:${props.info.email}`} className="inline-block bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
-                                {translations.enviarCorreoA} {props.info.email}
+                            <p className="mb-4 text font-primary">{translations.mensajeContacto}:</p><a href={`mailto:${info.email}`} className="inline-block bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
+                                {translations.enviarCorreoA} {info.email}
                             </a>
                         </>                    
                     ) : (
@@ -568,9 +466,6 @@ export default function Welcome(props) {
                     )}
                 </div>                
             </div>
-
-            
-
         </div>
     );
 }

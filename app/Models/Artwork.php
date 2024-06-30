@@ -30,4 +30,9 @@ class Artwork extends Model
     {
         return $this->hasMany(Video::class);
     }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
 }

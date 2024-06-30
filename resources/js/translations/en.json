@@ -1,7 +1,8 @@
 {
     "galeria": "Gallery",
     "blog": "Blog",
-    "artwork": "Sections",
+    "artwork": "Collections",
+    "sections": "Sections",
     "artistas": "About us",
     "sales": "Books/Gallery",
     "contacto": "Contact",
@@ -29,6 +30,7 @@
     "ver": "View",
     "editar": "Edit",
     "eliminar": "Remove",
+    "submit": "Submit",
     "elegirRol": "Select a role",
     "perfilUsuario": "User Profile",
     "btnAceptar": "Accept",

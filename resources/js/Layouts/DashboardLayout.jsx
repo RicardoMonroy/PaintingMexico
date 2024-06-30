@@ -46,6 +46,11 @@ const DashboardLayout = ({ children }) => {
                         </InertiaLink>
                     </li>
                     <li>
+                        <InertiaLink href="/sections" className="block py-2 text-button hover:bg- text-tertiary">
+                            {translations.sections}
+                        </InertiaLink>
+                    </li>
+                    <li>
                         <InertiaLink href="/sales" className="block py-2 text-button hover:bg- text-tertiary">
                             {translations.ventas}
                         </InertiaLink>

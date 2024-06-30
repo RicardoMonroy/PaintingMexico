@@ -7,7 +7,7 @@ function ViewArtwork({ artworkId, onEdit }) {
     const [artworkData, setArtworkData] = useState({
         front: '',
         background_color: '',
-        section: '',
+        section: { id: '', translations: { en: '', es: '' } },
         translations: {
             en: { title: '', description: '' },
             es: { title: '', description: '' },
@@ -26,11 +26,11 @@ function ViewArtwork({ artworkId, onEdit }) {
                 setArtworkData({
                     front: artwork.front,
                     background_color: artwork.background_color,
-                    section: artwork.section, 
+                    section: artwork.section || { id: '', translations: { en: '', es: '' } }, // Asegúrate de que section tenga un valor por defecto si es null
                     translations: artwork.translations.reduce((acc, translation) => {
                         acc[translation.locale] = { title: translation.title, description: translation.description };
                         return acc;
-                    }, {}),
+                    }, { en: { title: '', description: '' }, es: { title: '', description: '' } }),
                     images: artwork.images.map(img => img.url),
                     videos: artwork.videos.map(video => video.url),
                 });
@@ -51,7 +51,7 @@ function ViewArtwork({ artworkId, onEdit }) {
 
                 <div className="col-span-1 md:col-span-2 flex justify-center">
                     <h2 className="text-primary font-bold mb-2">Section: </h2>
-                    <p>{artworkData.section || 'None'}</p>  {/* Mostramos la sección */}
+                    <p>{artworkData.section.translations.en || 'None'}</p> 
                 </div>
 
                 {Object.entries(artworkData.translations).map(([lang, { title, description }]) => (
