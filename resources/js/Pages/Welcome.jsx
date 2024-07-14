@@ -233,7 +233,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             </div>
             {selectedArtwork && (
                 <div className="fixed inset-0 z-50 flex justify-center items-center">
-                    <div className="relative bg-white p-5 rounded overflow-auto" style={{ width: '100vw', height: '100vh', backgroundColor: `${selectedArtwork.background_color}` }}>
+                    <div className="relative bg-white p-5 rounded overflow-auto mx-4" style={{ width: '90vw', height: '90vh', backgroundColor: `${selectedArtwork.background_color}` }}>
                         {/* Botón para cerrar el modal en la esquina superior derecha */}
                         <button
                             className="absolute top-0 right-0 m-4 text-black flex items-center"
