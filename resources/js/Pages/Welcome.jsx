@@ -232,8 +232,8 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                 </div>
             </div>
             {selectedArtwork && (
-                <div className="fixed inset-0 z-50 flex justify-center items-center overflow-auto">
-                    <div className="relative bg-white p-4 rounded overflow-auto w-full h-full max-h-screen max-w-screen" style={{ backgroundColor: `${selectedArtwork.background_color}` }}>
+                <div className="fixed inset-0 z-50 flex justify-center items-center">
+                    <div className="relative bg-white p-5 rounded overflow-auto w-full h-full" style={{ backgroundColor: `${selectedArtwork.background_color}` }}>
                         {/* Botón para cerrar el modal en la esquina superior derecha */}
                         <button
                             className="absolute top-0 right-0 m-4 text-black flex items-center"
@@ -246,14 +246,14 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         </button>
             
                         {/* Título Centrado */}
-                        <h3 className="text-2xl font-bold text-center mt-8">
+                        <h3 className="text-2xl font-bold text-center">
                             {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
                         </h3>
             
                         {/* Foto de la portada y descripción */}
                         <div className="flex flex-col md:flex-row justify-between items-center my-4">
                             <div className="w-full md:w-1/2 p-2">
-                                <img src={selectedArtwork.front} alt="Portada" className="rounded w-full h-auto max-h-60vh object-contain" />
+                                <img src={selectedArtwork.front} alt="Portada" className="rounded w-full h-auto" />
                             </div>
                             <div className="w-full md:w-1/2 p-2 text-justify break-words">
                                 <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
@@ -264,7 +264,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         <Slider {...settings}>
                             {selectedArtwork.images.map((image, index) => (
                                 <div key={index} className="text-center">
-                                    <img src={`${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer max-h-60vh object-contain" />
+                                    <img src={`${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
                                     <p className="cursor-pointer" onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
                                         {image.description || 'Sin descripción'}
                                     </p>
