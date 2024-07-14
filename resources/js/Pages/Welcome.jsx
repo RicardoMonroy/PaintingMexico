@@ -233,7 +233,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             </div>
             {selectedArtwork && (
                 <div className="fixed inset-0 z-50 flex justify-center items-center">
-                    <div className="relative bg-white p-5 rounded overflow-auto mx-4" style={{ width: '100vw', height: '100vh', backgroundColor: `${selectedArtwork.background_color}` }}>
+                    <div className="relative bg-white p-5 rounded overflow-auto mx-4 md:mx-8 lg:mx-16" style={{ width: '100vw', height: '100vh', backgroundColor: `${selectedArtwork.background_color}` }}>
                         {/* Botón para cerrar el modal en la esquina superior derecha */}
                         <button
                             className="absolute top-0 right-0 m-4 text-black flex items-center"
@@ -284,14 +284,14 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         )}
             
                         {/* Carrusel de Videos */}
-                        <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             {selectedArtwork.videos.map((video, index) => {
                                 const videoId = video.url.split('v=')[1].split('&')[0];
                                 return (
                                     <div key={index}>
                                         <iframe
                                             width="100%"
-                                            height="315"
+                                            height="200"
                                             src={`https://www.youtube.com/embed/${videoId}`}
                                             title="YouTube video player"
                                             frameBorder="0"
