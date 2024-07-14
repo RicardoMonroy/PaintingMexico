@@ -233,7 +233,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             </div>
             {selectedArtwork && (
                 <div className="fixed inset-0 z-50 flex justify-center items-center">
-                    <div className="relative bg-white p-5 rounded overflow-auto mx-4" style={{ width: '90vw', height: '90vh', backgroundColor: `${selectedArtwork.background_color}` }}>
+                    <div className="relative bg-white p-5 rounded overflow-auto mx-4" style={{ width: '100vw', height: '100vh', backgroundColor: `${selectedArtwork.background_color}` }}>
                         {/* Botón para cerrar el modal en la esquina superior derecha */}
                         <button
                             className="absolute top-0 right-0 m-4 text-black flex items-center"
@@ -244,12 +244,12 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                             </svg>
                             <span className="text-sm font-medium ml-2">{translations.regresar}</span>
                         </button>
-
+            
                         {/* Título Centrado */}
                         <h3 className="text-2xl font-bold text-center">
                             {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
                         </h3>
-
+            
                         {/* Foto de la portada y descripción */}
                         <div className="flex flex-col md:flex-row justify-between items-center my-4">
                             <div className="w-full md:w-1/2 p-2">
@@ -259,7 +259,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                 <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
                             </div>
                         </div>
-
+            
                         {/* Carrusel de Imágenes con pie de imagen */}
                         <Slider {...settings}>
                             {selectedArtwork.images.map((image, index) => (
@@ -271,7 +271,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                 </div>
                             ))}
                         </Slider>
-
+            
                         {isImageModalOpen && (
                             <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
                                 <div className="bg-white p-5 rounded-lg">
@@ -282,7 +282,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                 </div>
                             </div>
                         )}
-
+            
                         {/* Carrusel de Videos */}
                         <div className="grid grid-cols-2 gap-4 mt-4">
                             {selectedArtwork.videos.map((video, index) => {
