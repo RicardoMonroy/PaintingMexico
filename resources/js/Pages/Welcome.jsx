@@ -190,7 +190,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             <div className="Your-custom-class" parallaxData={plxData}>
                 <div id="gallery" className="py-20 bg-gray-100" data-aos="fade-up">
                     <div className="text-center mb-10">
-                        <div className="inline-flex space-x-4">
+                        <div className="flex flex-wrap justify-center space-x-4">
                             {sections.map(section => (
                                 <button
                                     key={section.id}
@@ -232,7 +232,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                 </div>
             </div>
             {selectedArtwork && (
-                <div className="fixed inset-0 z-50 flex justify-center items-center">
+                <div className="fixed inset-0 z-50 flex justify-center items-center overflow-auto">
                     <div className="relative bg-white p-5 rounded overflow-auto w-full h-full" style={{ backgroundColor: `${selectedArtwork.background_color}` }}>
                         {/* Botón para cerrar el modal en la esquina superior derecha */}
                         <button
@@ -246,14 +246,14 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         </button>
             
                         {/* Título Centrado */}
-                        <h3 className="text-2xl font-bold text-center">
+                        <h3 className="text-2xl font-bold text-center mt-8">
                             {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
                         </h3>
             
                         {/* Foto de la portada y descripción */}
                         <div className="flex flex-col md:flex-row justify-between items-center my-4">
                             <div className="w-full md:w-1/2 p-2">
-                                <img src={selectedArtwork.front} alt="Portada" className="rounded w-full h-auto" />
+                                <img src={selectedArtwork.front} alt="Portada" className="rounded w-full h-auto max-h-60vh object-contain" />
                             </div>
                             <div className="w-full md:w-1/2 p-2 text-justify break-words">
                                 <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
@@ -264,7 +264,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         <Slider {...settings}>
                             {selectedArtwork.images.map((image, index) => (
                                 <div key={index} className="text-center">
-                                    <img src={`${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer" />
+                                    <img src={`${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer max-h-60vh object-contain" />
                                     <p className="cursor-pointer" onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
                                         {image.description || 'Sin descripción'}
                                     </p>
