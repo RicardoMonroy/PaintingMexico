@@ -3,13 +3,13 @@ import Slider from 'react-slick';
 import Plx from 'react-plx';
 import 'animate.css';
 import AOS from 'aos';
-import '../../css/effects.css';
 import 'aos/dist/aos.css';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import config from '@/config';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import '../../css/effects.css';
 import en from '../translations/en.json';
 import es from '../translations/es.json';
 import enFlag from '../../assets/en.png';
@@ -264,13 +264,19 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         <Slider {...settings}>
                             {selectedArtwork.images.map((image, index) => (
                                 <div key={index} className="text-center">
-                                    <img src={`${image.url}`} alt={`Imagen ${index + 1}`} className="rounded mb-2 w-full h-auto cursor-pointer max-h-60vh object-contain" />
-                                    <p className="cursor-pointer" onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
+                                    <img 
+                                        src={`${image.url}`} 
+                                        alt={`Imagen ${index + 1}`} 
+                                        className="rounded mb-2 w-full max-w-screen h-auto max-h-screen object-contain mx-auto"
+                                        style={{ maxHeight: '80vh' }} // Asegura que la altura máxima sea el 80% de la altura de la ventana
+                                    />
+                                    <p className="cursor-pointer mt-2" onClick={() => { setSelectedImage(image); setIsImageModalOpen(true); }}>
                                         {image.description || 'Sin descripción'}
                                     </p>
                                 </div>
                             ))}
                         </Slider>
+
             
                         {isImageModalOpen && (
                             <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">

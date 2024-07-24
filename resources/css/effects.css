@@ -61,3 +61,32 @@ button {
     font-weight: bold;
     margin: 10px;
 }
+
+.slick-slider {
+    width: 100%;
+}
+
+.slick-list {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.slick-track {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.slick-slide {
+    display: flex;
+    justify-content: center;
+}
+
+img {
+    max-height: 80vh;
+    object-fit: contain;
+    width: auto;
+    height: auto;
+    margin: auto;
+}
