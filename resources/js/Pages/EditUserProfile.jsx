@@ -47,37 +47,36 @@ const EditUserProfile = ({ userId, closeEditMode, profile }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Validación básica
         if (!formData.description_en || !formData.description_es) {
             console.error("Todos los campos son necesarios.");
             return;
         }
+        console.log("Existen descripciones en ES y en EN.");
 
-        console.log("el User a crear o editar profile es:", userId);
-    
         const uploadData = new FormData();
-        uploadData.append('userId', userId);    
-        if (formData.avatar instanceof File) {uploadData.append('avatar', formData.avatar);}    
+        uploadData.append('userId', userId);
+        if (formData.avatar instanceof File) {
+            uploadData.append('avatar', formData.avatar);
+        }
         uploadData.append('description_en', formData.description_en);
         uploadData.append('description_es', formData.description_es);
         uploadData.append('_method', 'PUT');
 
-        console.log('Upload data: ', uploadData?.data);
+        console.log('Información que sube: ', Array.from(uploadData.entries()));
 
-
-        axios.post(`/api/profiles/${userId}`, uploadData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-        .then(response => {
+        try {
+            await axios.post(`${config.API_URL}/profiles/${userId}`, uploadData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
             console.log("Información actualizada con éxito");
             closeEditMode();
-        })
-        .catch(error => {
-            console.error("Error al actualizar la información:", error);
-        });   
+        } catch (error) {
+            console.error("Error al actualizar la información:", error.response?.data || error.message);
+        } 
         
     };
     

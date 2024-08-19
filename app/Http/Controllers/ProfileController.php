@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
+use App\Models\Profile;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -24,20 +28,57 @@ class ProfileController extends Controller
         ]);
     }
 
+    public function show($userId)
+    {
+        // Lógica para mostrar el perfil del usuario
+    }
+
+
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request, $id)
     {
-        $request->user()->fill($request->validated());
+        logger('Request data:', $request->all());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Buscar o crear el perfil basado en el userId
+        $profile = Profile::firstOrCreate(
+            ['user_id' => $id],
+            ['user_id' => $id] // Asegurarse de que el user_id se establezca si se crea un nuevo perfil
+        );
+        logger('Profile:', $profile->toArray()); // Convertir el perfil a un array
+
+        $validated = $request->validate([
+            'avatar' => 'nullable|image',
+            'description_en' => 'required|string',
+            'description_es' => 'required|string',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            // Eliminar el avatar anterior si existe
+            if ($profile->avatar) {
+                $oldAvatarPath = str_replace('/storage/', '', $profile->avatar);
+                Storage::disk('public')->delete($oldAvatarPath);
+            }
+    
+            // Almacenar el nuevo avatar en la carpeta artworks
+            $avatarPath = $request->file('avatar')->store('artworks', 'public');
+            $profile->avatar = '/storage/' . $avatarPath;
         }
 
-        $request->user()->save();
+        $profile->save();
 
-        return Redirect::route('profile.edit');
+        $profile->translates()->updateOrCreate(
+            ['locale' => 'en'],
+            ['description' => $validated['description_en']]
+        );
+
+        $profile->translates()->updateOrCreate(
+            ['locale' => 'es'],
+            ['description' => $validated['description_es']]
+        );
+
+        return response()->json(['message' => 'Profile updated successfully']);
     }
 
     /**
