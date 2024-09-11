@@ -213,13 +213,17 @@ class ArtworkController extends Controller
         // Actualizar vídeos
         // Asegúrate de tener una lógica adecuada para actualizar o añadir nuevos vídeos
         if ($request->has('videos')) {
-            // Eliminar los vídeos existentes
+            // Eliminar los vídeos existentes si ya no se incluyen en la solicitud
             $artwork->videos()->delete();
-
+        
             // Añadir los nuevos vídeos
             foreach ($request->input('videos') as $videoUrl) {
-                $artwork->videos()->create(['url' => $videoUrl]);
-                \Log::info('Video añadido:', ['url' => $videoUrl]);
+                if (!empty($videoUrl)) { // Solo añadir si la URL no está vacía
+                    $artwork->videos()->create(['url' => $videoUrl]);
+                    \Log::info('Video añadido:', ['url' => $videoUrl]);
+                } else {
+                    \Log::info('Video no añadido debido a una URL vacía.');
+                }
             }
         }
 

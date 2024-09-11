@@ -389,17 +389,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                     )}
                     {/* TODO: terminar galerias */}
                 </div>                
-            </div>
-
-            {/* Blog */}
-            <div id="blog" className="py-20 bg-gray-100" data-aos="fade-up" >
-                <h2 className="text-3xl font-bold text-center">{translations.blog}</h2><br />
-                <div className="container mx-auto px-4 " style={{ width: '100vw', height: '80vh'}}>
-                    <iframe src="https://jackhannula.blogspot.com" width="80%" height="500px">
-                        <p>Tu navegador no soporta iFrame.</p>
-                    </iframe>
-                </div>
-            </div>            
+            </div>      
 
             {/* Artistas */}
             <div id="artists" className="py-20 bg-gray-100" data-aos="fade-up">
@@ -456,6 +446,16 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                     )}
                 </div>                
             </div>
+
+            {/* Blog */}
+            <div id="blog" className="py-20 bg-gray-100" data-aos="fade-up" >
+                <h2 className="text-3xl font-bold text-center">{translations.blog}</h2><br />
+                <div className="container mx-auto px-4 " style={{ width: '100vw', height: '80vh'}}>
+                    <iframe src="https://jackhannula.blogspot.com" width="80%" height="500px">
+                        <p>Tu navegador no soporta iFrame.</p>
+                    </iframe>
+                </div>
+            </div>      
 
             {/* Contacto */}
             <div id="contact" className="py-20 bg-gray-100" data-aos="fade-up">
