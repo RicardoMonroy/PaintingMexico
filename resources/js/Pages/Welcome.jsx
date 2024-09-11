@@ -154,6 +154,13 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
         filterArtworksBySection(section);
     };
 
+    const truncateText = (text, wordLimit) => {
+        const words = text.split(' ');
+        return words.length > wordLimit
+            ? words.slice(0, wordLimit).join(' ') + '...'
+            : text;
+    };
+
     return (
         <div id="home">
             {/* Navbar */}
@@ -408,7 +415,8 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                         />
                                         <div className="px-6 py-4">
                                             <div className="font-bold text-xl mb-2">{user.name}</div>
-                                            <p className="text-gray-700 text-base" dangerouslySetInnerHTML={{ __html: profileTranslation?.description || 'Descripción no disponible' }}></p>
+                                            {/* <p className="text-gray-700 text-base" dangerouslySetInnerHTML={{ __html: profileTranslation?.description || 'Descripción no disponible' }}></p> */}
+                                            <p className="text-gray-700 text-base" dangerouslySetInnerHTML={{ __html: truncateText(profileTranslation?.description || 'Descripción no disponible', 50) }}></p>
                                         </div>
                                     </div>
                                 );
