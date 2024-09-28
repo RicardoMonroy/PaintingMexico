@@ -20,65 +20,54 @@ const DashboardLayout = ({ children }) => {
     return (
         <div className="flex h-screen">
             {/* Barra lateral */}
-            <div className="sticky top-0 w-64 bg-primary text-tertiary p-5">
-                <InertiaLink href="/dashboard" className="block py-2">
-                    <h1 className="text-xl mb-4">{translations.dashboard}</h1>
-                </InertiaLink>
-                <ul>
-                    {/* <li>
-                        <InertiaLink href="/configuracion" className="block py-2 text-button hover:bg-tertiary">
-                            {translations.configuracion}
-                        </InertiaLink>
-                    </li> */}
-                    <li>
-                        <InertiaLink href="/usuarios" className="block py-2 text-button hover:bg-tertiary text-tertiary">
-                            {translations.usuarios}
-                        </InertiaLink>
-                    </li>
-                    {/* <li>
-                        <InertiaLink href="/posts" className="block py-2 text-button hover:bg-tertiary text-tertiary">
-                            {translations.posts}
-                        </InertiaLink>
-                    </li> */}
-                    <li>
-                        <InertiaLink href="/artworks" className="block py-2 text-button hover:bg- text-tertiary">
-                            {translations.artwork}
-                        </InertiaLink>
-                    </li>
-                    <li>
-                        <InertiaLink href="/sections" className="block py-2 text-button hover:bg- text-tertiary">
-                            {translations.sections}
-                        </InertiaLink>
-                    </li>
-                    <li>
-                        <InertiaLink href="/sales" className="block py-2 text-button hover:bg- text-tertiary">
-                            {translations.ventas}
-                        </InertiaLink>
-                    </li>
-                    <li>
-                        <InertiaLink href="/info" className="block py-2 text-button hover:bg- text-tertiary">
-                            {translations.informacion}
-                        </InertiaLink>
-                    </li>
-                    <li>
-                        <InertiaLink href="/logout" className="block py-2 text-button hover:bg- text-tertiary" method="post" as="button">
-                            {translations.cerrarSesion}
-                        </InertiaLink>
-                    </li>
-                </ul>
-                <div className="absolute bottom-0 w-full text-center pb-5 text-primary">
-                    <select onChange={(e) => changeLanguage(e.target.value)} defaultValue={language}>
+            <div className="w-64 bg-primary text-tertiary p-5 h-screen flex flex-col justify-between flex-shrink-0">
+                <div>
+                    <InertiaLink href="/dashboard" className="block py-2">
+                        <h1 className="text-xl mb-4">{translations.dashboard}</h1>
+                    </InertiaLink>
+                    <ul>
+                        {/* ... elementos del menú ... */}
+                        <li>
+                            <InertiaLink href="/usuarios" className="block py-2 text-button hover:bg-tertiary text-tertiary">
+                                {translations.usuarios}
+                            </InertiaLink>
+                        </li>
+                        <li>
+                            <InertiaLink href="/artworks" className="block py-2 text-button hover:bg-tertiary text-tertiary">
+                                {translations.artwork}
+                            </InertiaLink>
+                        </li>
+                        <li>
+                            <InertiaLink href="/sections" className="block py-2 text-button hover:bg-tertiary text-tertiary">
+                                {translations.sections}
+                            </InertiaLink>
+                        </li>
+                        <li>
+                            <InertiaLink href="/sales" className="block py-2 text-button hover:bg-tertiary text-tertiary">
+                                {translations.ventas}
+                            </InertiaLink>
+                        </li>
+                        <li>
+                            <InertiaLink href="/info" className="block py-2 text-button hover:bg-tertiary text-tertiary">
+                                {translations.informacion}
+                            </InertiaLink>
+                        </li>
+                        <li>
+                            <InertiaLink href="/logout" className="block py-2 bg-secondary text-button hover:bg-tertiary text-tertiary" method="post" as="button">
+                                {translations.cerrarSesion}
+                            </InertiaLink>
+                        </li>
+                    </ul>
+                </div>
+                <div className="w-full text-center pb-5 text-primary">
+                    <select onChange={(e) => changeLanguage(e.target.value)} defaultValue={language} className="bg-white text-primary p-2 rounded">
                         <option value="en">English</option>
                         <option value="es">Español</option>
                     </select>
                 </div>
             </div>
-
-
-            
-            
             {/* Contenido principal */}
-            <div className="flex-1 p-5">
+            <div className="flex-1 p-5 overflow-y-auto">
                 {children}
             </div>
         </div>
