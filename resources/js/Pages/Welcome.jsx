@@ -59,6 +59,16 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
         });
     }, []);
 
+    useEffect(() => {
+        // Reaplicar el filtro cuando cambie el idioma o las obras de arte
+        if (selectedFilter === 'none') {
+            setFilteredArtworks(artworks);
+        } else {
+            filterArtworksBySection(selectedFilter);
+        }
+    }, [artworks, language]);
+    
+
     const settings = {
         dots: true,
         infinite: true,
@@ -141,13 +151,13 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
         }
     };
     
-    const filterArtworksBySection = (section) => {
-        if (section === 'none') {
+    const filterArtworksBySection = (sectionId) => {
+        if (sectionId === 'none') {
             setFilteredArtworks(artworks);
         } else {
-            setFilteredArtworks(artworks.filter(artwork => artwork.section_id === section));
+            setFilteredArtworks(artworks.filter(artwork => artwork.sections.some(section => section.id == sectionId)));
         }
-    };
+    };    
 
     const handleFilterClick = (section) => {
         setSelectedFilter(section);

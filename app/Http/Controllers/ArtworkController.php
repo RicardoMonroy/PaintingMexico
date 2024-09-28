@@ -50,7 +50,8 @@ class ArtworkController extends Controller
             'images' => 'sometimes|array', // Valida que las imágenes sean un arreglo
             'images.*' => 'image', // Valida que cada elemento del arreglo sea una imagen
             'background_color' => 'required|string|max:7',
-            'section' => 'nullable|exists:sections,id'
+            'sections' => 'nullable|array',
+            'sections.*' => 'exists:sections,id'
         ]);
 
         logger('Validated data:', $validatedData);
@@ -59,7 +60,7 @@ class ArtworkController extends Controller
             $artwork = new Artwork();
             $artwork->user_id = auth()->id();
             $artwork->background_color = $request->input('background_color'); // Asigna el color de fondo
-            $artwork->section_id = $request->input('section');
+            // $artwork->section_id = $request->input('section');
 
             // Almacena la imagen 'front' y guarda la URL pública
             if ($request->hasFile('front')) {
@@ -68,6 +69,11 @@ class ArtworkController extends Controller
             }
             
             $artwork->save();
+
+            // Asociar las secciones seleccionadas
+            if ($request->has('sections')) {
+                $artwork->sections()->sync($request->input('sections'));
+            }
     
             // Decodifica la cadena JSON de translations
             $translations = json_decode($request->get('translations'), true);
@@ -115,7 +121,7 @@ class ArtworkController extends Controller
      */
     public function show($id)
     {
-        $artwork = Artwork::with(['translations', 'images', 'videos'])->find($id);
+        $artwork = Artwork::with(['translations', 'images', 'videos', 'sections.translations'])->find($id);
         if (!$artwork) {
             return response()->json(['message' => 'Artwork not found'], 404);
         }
@@ -148,12 +154,14 @@ class ArtworkController extends Controller
         $validatedData = $request->validate([
             'background_color' => 'required|string',
             'translations.*.title' => 'required|string',
-            'section' => 'nullable|exists:sections,id'
+            // 'section' => 'nullable|exists:sections,id'
+            'sections' => 'nullable|array',
+            'sections.*' => 'exists:sections,id',
         ]);
 
         // Actualizar los campos del modelo
         $artwork->background_color = $request->input('background_color');
-        $artwork->section_id = $request->input('section');
+        // $artwork->section_id = $request->input('section');
 
         // Actualizar la imagen principal si se ha enviado una nueva
         if ($request->hasFile('front')) {
@@ -239,6 +247,14 @@ class ArtworkController extends Controller
 
         // Guardar los cambios en la base de datos
         $artwork->save();
+
+        // Asociar las secciones seleccionadas
+        if ($request->has('sections')) {
+            $artwork->sections()->sync($request->input('sections'));
+        } else {
+            // Si no se proporcionan secciones, desvincular todas
+            $artwork->sections()->detach();
+        }
 
         // Retornar una respuesta, podría ser el objeto actualizado o una redirección
         return response()->json($artwork);

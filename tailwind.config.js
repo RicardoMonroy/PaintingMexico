@@ -18,7 +18,7 @@ export default {
             colors: { // Aquí se añade la sección de colores personalizados
                 primary: '#161311',
                 secondary: '#2C3E50', // Un azul oscuro/gris para complementar
-                tertiary: '#95A5A6', // Un gris claro para contrastes suaves
+                tertiary: '#ffffff', // Un gris claro para contrastes suaves
                 success: '#27AE60', // Verde para mensajes de éxito
                 warning: '#F39C12', // Amarillo para advertencias
                 error: '#C0392B', // Rojo para errores
@@ -27,7 +27,7 @@ export default {
                 text: {
                     primary: '#161311', // Principalmente para texto sobre fondo claro
                     secondary: '#FFFFFF', // Para texto sobre fondos oscuros
-                    tertiary: '#7F8C8D', // Para texto menos prominente o detalles
+                    tertiary: '#ffffff', // Para texto menos prominente o detalles
                 },
                 button: {
                     primary: '#161311',

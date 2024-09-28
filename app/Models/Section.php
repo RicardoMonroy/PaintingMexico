@@ -16,8 +16,12 @@ class Section extends Model
         return $this->hasMany(SectionTranslation::class);
     }
 
+    // public function artworks()
+    // {
+    //     return $this->hasMany(Artwork::class);
+    // }
     public function artworks()
     {
-        return $this->hasMany(Artwork::class);
+        return $this->belongsToMany(Artwork::class, 'artwork_section');
     }
 }

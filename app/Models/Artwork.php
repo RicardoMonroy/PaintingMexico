@@ -31,8 +31,12 @@ class Artwork extends Model
         return $this->hasMany(Video::class);
     }
 
-    public function section()
+    // public function section()
+    // {
+    //     return $this->belongsTo(Section::class);
+    // }
+    public function sections()
     {
-        return $this->belongsTo(Section::class);
+        return $this->belongsToMany(Section::class, 'artwork_section');
     }
 }

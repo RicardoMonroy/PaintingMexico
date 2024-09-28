@@ -27,9 +27,9 @@ use App\Http\Controllers\ArtworkController;
 
 Route::get('/', function () {
     $info = Info::first();    
-    $artworks = Artwork::with(['translations', 'images', 'videos', 'section'])
+    $artworks = Artwork::with(['translations', 'images', 'videos', 'sections.translations'])
                         ->orderBy('created_at', 'desc')
-                        ->take(15)
+                        ->take(30)
                         ->get();
     
     $sections = Section::with(['translations'])

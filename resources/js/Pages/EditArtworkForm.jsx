@@ -20,7 +20,8 @@ function EditArtworkForm({ artworkId, closeModal }) {
         existingImages: [],
         newImages: [],
         videos: [],
-        section: ''
+        // section: ''
+        selectedSections: []
     });
     const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -40,14 +41,25 @@ function EditArtworkForm({ artworkId, closeModal }) {
                 setArtworkData({
                     front: artwork.front,
                     background_color: artwork.background_color,
-                    translations: artwork.translations.reduce((acc, translation) => {
-                        acc[translation.locale] = { title: translation.title, description: translation.description };
-                        return acc;
-                    }, {}),
+                    // translations: artwork.translations.reduce((acc, translation) => {
+                    //     acc[translation.locale] = { title: translation.title, description: translation.description };
+                    //     return acc;
+                    // }, {}),
+                    translations: {
+                        en: {
+                            title: artwork.translations.find(t => t.locale === 'en')?.title || '',
+                            description: artwork.translations.find(t => t.locale === 'en')?.description || ''
+                        },
+                        es: {
+                            title: artwork.translations.find(t => t.locale === 'es')?.title || '',
+                            description: artwork.translations.find(t => t.locale === 'es')?.description || ''
+                        }
+                    },
                     images: artwork.images.map(img => img.url),
                     videos: artwork.videos.map(video => video.url),
                     existingImages: artwork.images || [],
-                    section: artwork.section_id || ''
+                    // section: artwork.section_id || ''
+                    selectedSections: artwork.sections ? artwork.sections.map(section => section.id) : [],
                 });
             } catch (error) {
                 console.error('Error fetching artwork data:', error);
@@ -86,6 +98,11 @@ function EditArtworkForm({ artworkId, closeModal }) {
         const updatedExistingImages = artworkData.existingImages.filter((_, idx) => idx !== index);
         setArtworkData({ ...artworkData, existingImages: updatedExistingImages });
     };
+    const handleRemoveNewImage = (index) => {
+        const updatedNewImages = artworkData.newImages.filter((_, idx) => idx !== index);
+        setArtworkData({ ...artworkData, newImages: updatedNewImages });
+    };
+    
 
     const handleImageDescriptionChange = (index, value) => {
         const updatedExistingImages = [...artworkData.existingImages];
@@ -130,10 +147,6 @@ function EditArtworkForm({ artworkId, closeModal }) {
         setArtworkData({ ...artworkData, background_color: e.target.value });
     };
 
-    const handleSectionChange = (e) => {
-        setArtworkData({ ...artworkData, section: e.target.value });
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -162,7 +175,12 @@ function EditArtworkForm({ artworkId, closeModal }) {
 
         const formData = new FormData();
         formData.append('background_color', artworkData.background_color);
-        formData.append('section', artworkData.section);
+        // formData.append('section', artworkData.section);
+        
+        // Añadir las secciones seleccionadas
+        artworkData.selectedSections.forEach(sectionId => {
+            formData.append('sections[]', sectionId);
+        });
 
         if (artworkData.front instanceof File) {
             formData.append('front', artworkData.front);
@@ -203,8 +221,13 @@ function EditArtworkForm({ artworkId, closeModal }) {
             closeModal();
             setLoading(false);
         } catch (error) {
-            setError('Error al actualizar el artwork. Por favor, intenta de nuevo.');
             setLoading(false);
+            if (error.response && error.response.data && error.response.data.errors) {
+                // Mostrar errores específicos
+                setValidationErrors(error.response.data.errors);
+            } else {
+                setError('Error al actualizar el artwork. Por favor, intenta de nuevo.');
+            }
             console.error('Error updating artwork:', error);
         }
     };
@@ -243,6 +266,15 @@ function EditArtworkForm({ artworkId, closeModal }) {
                                     </button>
                                 </div>
                             ))}
+                            {artworkData.newImages && artworkData.newImages.map((file, index) => (
+                                <div key={`new-image-${index}`} className="inline-block relative">
+                                    <img src={URL.createObjectURL(file)} alt={`New Image ${index}`} className="w-full h-auto object-cover rounded-lg shadow-md" />
+                                    <button type="button" onClick={() => handleRemoveNewImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                                        X
+                                    </button>
+                                </div>
+                            ))}
+
                         </div>
                         <br />
                         <input
@@ -299,7 +331,7 @@ function EditArtworkForm({ artworkId, closeModal }) {
                 </div>
 
                 <div className="col-span-1 md:col-span-2">
-                    <label className="block text-primary font-bold mb-2">Section</label>
+                    {/* <label className="block text-primary font-bold mb-2">Section</label>
                     <select
                         value={artworkData.section}
                         onChange={handleSectionChange}
@@ -311,6 +343,22 @@ function EditArtworkForm({ artworkId, closeModal }) {
                                     {sec.translations.find(t => t.locale === language)?.name || sec.translations[0]?.name}
                                 </option>
                             ))}
+                    </select> */}
+                    <label className="block text-primary font-bold mb-2">{translations.sections}</label>
+                    <select
+                        multiple
+                        value={artworkData.selectedSections}
+                        onChange={(e) => setArtworkData({
+                            ...artworkData,
+                            selectedSections: Array.from(e.target.selectedOptions, option => option.value)
+                        })}
+                        className="w-full p-2 border rounded shadow-sm"
+                    >
+                        {sections && sections.length > 0 && sections.map((sec) => (
+                            <option key={sec.id} value={sec.id}>
+                                {sec.translations.find(t => t.locale === language)?.name || sec.translations[0]?.name}
+                            </option>
+                        ))}
                     </select>
 
                     <label className="block text-primary font-bold mb-2">Videos</label>
@@ -346,8 +394,14 @@ function EditArtworkForm({ artworkId, closeModal }) {
                         {loading ? <BeatLoader size={8} color="#fff" /> : "Submit"}
                     </button>
                     {loading && <BeatLoader color="#36D7B7" />}
-                    {error && <div className="text-red-500 mt-4">{error}</div>}
-                </div>
+                    {Object.keys(validationErrors).length > 0 && (
+                        <div className="text-red-500 mt-4">
+                            {Object.values(validationErrors).map((errMsg, idx) => (
+                                <p key={idx}>{errMsg}</p>
+                            ))}
+                        </div>
+                    )}
+                                    </div>
             </form>
             {error && <div className="text-red-500 text-center mt-2">{error}</div>}
         </div>

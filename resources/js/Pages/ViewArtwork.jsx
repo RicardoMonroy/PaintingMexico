@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import config from '@/config';
 import axios from 'axios';
 import '../../css/effects.css';
+import { useLanguage } from '@/contexts/LanguageContext';
+import en from '../translations/en.json';
+import es from '../translations/es.json';
 
 function ViewArtwork({ artworkId, onEdit }) {
     const [artworkData, setArtworkData] = useState({
         front: '',
         background_color: '',
-        section: { id: '', translations: { en: '', es: '' } },
+        sections: [],
         translations: {
             en: { title: '', description: '' },
             es: { title: '', description: '' },
@@ -15,6 +18,9 @@ function ViewArtwork({ artworkId, onEdit }) {
         images: [],
         videos: [],
     });
+
+    const { language } = useLanguage();
+    const translations = language === 'en' ? en : es;
 
     useEffect(() => {
         console.log("Artwork ID in ViewArtwork:", artworkId);
@@ -26,7 +32,7 @@ function ViewArtwork({ artworkId, onEdit }) {
                 setArtworkData({
                     front: artwork.front,
                     background_color: artwork.background_color,
-                    section: artwork.section || { id: '', translations: { en: '', es: '' } }, // Asegúrate de que section tenga un valor por defecto si es null
+                    sections: artwork.sections || [],
                     translations: artwork.translations.reduce((acc, translation) => {
                         acc[translation.locale] = { title: translation.title, description: translation.description };
                         return acc;
@@ -49,17 +55,25 @@ function ViewArtwork({ artworkId, onEdit }) {
                     <img src={artworkData.front} alt="Front" className="mb-4 h-40 w-auto object-cover" />
                 </div>
 
-                <div className="col-span-1 md:col-span-2 flex justify-center">
-                    <h2 className="text-primary font-bold mb-2">Section: </h2>
-                    <p>{artworkData.section.translations.en || 'None'}</p> 
+                <div className="col-span-1 md:col-span-2">
+                    <div className="text-center">
+                        <h2 className="text-primary font-bold mb-2">{translations.sections}:</h2>
+                        {artworkData.sections.length > 0 ? (
+                            artworkData.sections
+                                .map((section) => section.translations.find(t => t.locale === language)?.name || section.translations[0]?.name)
+                                .join(', ')
+                        ) : (
+                            <p>{translations.none}</p>
+                        )}
+                    </div>
                 </div>
 
                 {Object.entries(artworkData.translations).map(([lang, { title, description }]) => (
                     <div key={lang}>
-                        {/* <h2 className="text-primary font-bold mb-2">{`${lang.toUpperCase()} Title`}</h2> */}
+                        <h2 className="text-primary font-bold mb-2">{`${translations.title} (${lang.toUpperCase()})`}</h2>
                         <p><strong>{title}</strong></p>
 
-                        {/* <h2 className="text-primary font-bold mb-2">{`${lang.toUpperCase()} Description`}</h2> */}
+                        <h2 className="text-primary font-bold mb-2">{`${translations.description} (${lang.toUpperCase()})`}</h2>
                         <div className="text-justify break-words" dangerouslySetInnerHTML={{ __html: description }} />
                     </div>
                 ))}
@@ -73,7 +87,7 @@ function ViewArtwork({ artworkId, onEdit }) {
                 </div>
 
                 <div className="col-span-1 md:col-span-2">
-                    <h2 className="text-primary font-bold mb-2">Videos (URLs)</h2>
+                    <h2 className="text-primary font-bold mb-2">Videos</h2>
                     <ul>
                         {artworkData.videos.map((video, index) => (
                             <li key={index}><a href={video} target="_blank" rel="noopener noreferrer">{video}</a></li>
@@ -82,7 +96,7 @@ function ViewArtwork({ artworkId, onEdit }) {
                 </div>
 
                 <div className="col-span-1 md:col-span-2">
-                    <h2 className="text-primary font-bold mb-2">Background Color ({artworkData.background_color})</h2>
+                    <h2 className="text-primary font-bold mb-2">{`${translations.backgroundColor} (${artworkData.background_color})`}</h2>
                     <div style={{ backgroundColor: artworkData.background_color, height: '100px', width: '100%' }} />
                 </div>
                 

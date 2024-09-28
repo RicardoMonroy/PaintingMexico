@@ -11,7 +11,7 @@ import es from '../translations/es.json';
 function NewArtworkForm({ closeModal, fetchArtworks }) {
     const [front, setFront] = useState('');
     const [color, setColor] = useState('#F2F2F2');
-    const [section, setSection] = useState('');
+    const [selectedSections, setSelectedSections] = useState([]);
     const [sections, setSections] = useState([]);
     const [artworkData, setArtworkData] = useState({
         front: '',
@@ -90,7 +90,10 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
         const formData = new FormData();
         formData.append('front', front);
         formData.append('background_color', color);
-        formData.append('section', section);
+        // formData.append('section', section);
+        selectedSections.forEach(sectionId => {
+            formData.append('sections[]', sectionId);
+        });
         artworkData.images.forEach((image, index) => {
             formData.append(`images[${index}]`, image);
         });
@@ -157,8 +160,21 @@ function NewArtworkForm({ closeModal, fetchArtworks }) {
                     {/* Sección */}
                     <div className="mb-4">
                         <label className="block text-primary font-bold mb-2">{translations.sections}</label>
-                        <select value={section} onChange={(e) => setSection(e.target.value)} className="w-full p-2 border rounded shadow-sm" required>
+                        {/* <select value={section} onChange={(e) => setSection(e.target.value)} className="w-full p-2 border rounded shadow-sm" required>
                             <option value="" disabled>Select...</option>
+                            {sections && sections.length > 0 && sections.map((sec) => (
+                                <option key={sec.id} value={sec.id}>
+                                    {sec.translations.find(t => t.locale === language)?.name || sec.translations[0]?.name}
+                                </option>
+                            ))}
+                        </select> */}
+                        <select
+                            multiple
+                            value={selectedSections}
+                            onChange={(e) => setSelectedSections(Array.from(e.target.selectedOptions, option => option.value))}
+                            className="w-full p-2 border rounded shadow-sm"
+                            required
+                        >
                             {sections && sections.length > 0 && sections.map((sec) => (
                                 <option key={sec.id} value={sec.id}>
                                     {sec.translations.find(t => t.locale === language)?.name || sec.translations[0]?.name}
