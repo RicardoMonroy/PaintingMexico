@@ -188,12 +188,12 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             </nav>
 
             {/* Sección de Bienvenida */}
-            <div className="relative text-center animate__animated animate__zoomIn">
+            <div className="relative w-screen animate__animated animate__zoomIn">
                 {info ? (
                     <div className="relative">
-                        <img src={info.banner} alt="Banner" className="w-full h-auto mx-auto" />
+                        <img src={info.banner} alt="Banner" className="w-full h-auto" style={{ maxHeight: 'none' }}/>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold" style={{ marginTop: 'calc(3vh / 3)' }}>
+                            <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold">
                                 Painting México
                             </h1>
                         </div>
@@ -212,7 +212,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                 <button
                                     key={section.id}
                                     onClick={() => handleFilterClick(section.id)}
-                                    className={`flex items-center font-bold py-2 px-4 rounded-full text-lg transition duration-300 ${selectedFilter === section.id ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
+                                    className={`flex items-center font-bold py-2 px-4 rounded-full text-lg text-primary transition duration-300 ${selectedFilter === section.id ? 'bg-button-hover text-white' : 'bg-tertiary text-button-text'}`}
                                 >
                                     <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
