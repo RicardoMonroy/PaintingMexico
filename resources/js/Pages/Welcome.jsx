@@ -195,8 +195,8 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         <div className="absolute inset-0 flex items-center justify-center">
                             <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold">
                                 Painting México
-                            </h1>
-                            <h3>by Jack Hannula</h3>
+                            </h1><br />
+                            <h2 className="text-3xl font-bold text-center">by Jack Hannula</h2>
                         </div>
                     </div>
                 ) : (
