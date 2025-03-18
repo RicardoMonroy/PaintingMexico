@@ -7,7 +7,7 @@ import 'aos/dist/aos.css';
 import { InertiaLink } from '@inertiajs/inertia-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import config from '@/config';
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import '../../css/effects.css';
 import en from '../translations/en.json';
@@ -51,7 +51,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             ]
         }
     ];
-      
+
     useEffect(() => {
         AOS.init({
             duration: 1200,
@@ -67,7 +67,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             filterArtworksBySection(selectedFilter);
         }
     }, [artworks, language]);
-    
+
 
     const settings = {
         dots: true,
@@ -138,7 +138,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
         console.log(user.profile);
         setIsProfileModalOpen(true);
     };
-    
+
     const closeProfileModal = () => {
         setIsProfileModalOpen(false);
         setSelectedUser(null);
@@ -150,14 +150,14 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             section.scrollIntoView({ behavior: 'smooth' });
         }
     };
-    
+
     const filterArtworksBySection = (sectionId) => {
         if (sectionId === 'none') {
             setFilteredArtworks(artworks);
         } else {
             setFilteredArtworks(artworks.filter(artwork => artwork.sections.some(section => section.id == sectionId)));
         }
-    };    
+    };
 
     const handleFilterClick = (section) => {
         setSelectedFilter(section);
@@ -181,8 +181,8 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         <img src={loginIcon} alt="Login" className="w-8 h-8" />
                     </InertiaLink>
                     <div className="flex space-x-2">
-                        <img src={enFlag} alt="English" onClick={() => changeLanguage('en')} className="cursor-pointer h-8"/>
-                        <img src={esFlag} alt="Español" onClick={() => changeLanguage('es')} className="cursor-pointer h-8"/>
+                        <img src={enFlag} alt="English" onClick={() => changeLanguage('en')} className="cursor-pointer h-8" />
+                        <img src={esFlag} alt="Español" onClick={() => changeLanguage('es')} className="cursor-pointer h-8" />
                     </div>
                 </div>
             </nav>
@@ -191,11 +191,12 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
             <div className="relative w-screen animate__animated animate__zoomIn">
                 {info ? (
                     <div className="relative">
-                        <img src={info.banner} alt="Banner" className="w-full h-auto" style={{ maxHeight: 'none' }}/>
+                        <img src={info.banner} alt="Banner" className="w-full h-auto" style={{ maxHeight: 'none' }} />
                         <div className="absolute inset-0 flex items-center justify-center">
                             <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold">
                                 Painting México
                             </h1>
+                            <h3>by Jack Hannula</h3>
                         </div>
                     </div>
                 ) : (
@@ -245,7 +246,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         ) : (
                             <p className="text-center">{translations.noInfoAvailable}</p>
                         )}
-                    </div>                                        
+                    </div>
                 </div>
             </div>
             {selectedArtwork && (
@@ -261,12 +262,12 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                             </svg>
                             <span className="text-sm font-medium ml-2">{translations.regresar}</span>
                         </button>
-            
+
                         {/* Título Centrado */}
                         <h3 className="text-2xl font-bold text-center mt-8">
                             {selectedArtwork.translations.find(t => t.locale === language)?.title || 'Título no disponible'}
                         </h3>
-            
+
                         {/* Foto de la portada y descripción */}
                         <div className="flex flex-col md:flex-row justify-between items-center my-4">
                             <div className="w-full md:w-1/2 p-2">
@@ -276,14 +277,14 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                 <div dangerouslySetInnerHTML={{ __html: selectedArtwork.translations.find(t => t.locale === language)?.description || 'Descripción no disponible' }}></div>
                             </div>
                         </div>
-            
+
                         {/* Carrusel de Imágenes con pie de imagen */}
                         <Slider {...settings}>
                             {selectedArtwork.images.map((image, index) => (
                                 <div key={index} className="text-center">
-                                    <img 
-                                        src={`${image.url}`} 
-                                        alt={`Imagen ${index + 1}`} 
+                                    <img
+                                        src={`${image.url}`}
+                                        alt={`Imagen ${index + 1}`}
                                         className="rounded mb-2 w-full max-w-screen h-auto max-h-screen object-contain mx-auto"
                                         style={{ maxHeight: '80vh' }} // Asegura que la altura máxima sea el 80% de la altura de la ventana
                                     />
@@ -294,7 +295,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                             ))}
                         </Slider>
 
-            
+
                         {isImageModalOpen && (
                             <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center">
                                 <div className="bg-white p-5 rounded-lg">
@@ -305,7 +306,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                 </div>
                             </div>
                         )}
-            
+
                         {/* Carrusel de Videos */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             {selectedArtwork.videos.map((video, index) => {
@@ -382,7 +383,7 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                     {selectedSale.sale_galleries.map((galleryItem) => (
                                         <img
                                             key={galleryItem.idsaleGallery}
-                                            src={`${galleryItem.url}`}   
+                                            src={`${galleryItem.url}`}
                                             alt="Gallery Image"
                                             className="w-full h-auto rounded"
                                         />
@@ -405,8 +406,8 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                         </div>
                     )}
                     {/* TODO: terminar galerias */}
-                </div>                
-            </div>      
+                </div>
+            </div>
 
             {/* Artistas */}
             <div id="artists" className="py-20 bg-gray-100" data-aos="fade-up">
@@ -451,8 +452,8 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                                     {selectedUser.name}
                                 </h2>
                                 <p className="mt-2"
-                                    dangerouslySetInnerHTML={{ 
-                                        __html: selectedUser.profile.translates?.find(t => t.locale === language)?.description || 'Descripción no disponible' 
+                                    dangerouslySetInnerHTML={{
+                                        __html: selectedUser.profile.translates?.find(t => t.locale === language)?.description || 'Descripción no disponible'
                                     }}
                                 >
                                 </p>
@@ -462,33 +463,33 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                             </div>
                         </div>
                     )}
-                </div>                
+                </div>
             </div>
 
             {/* Blog */}
             <div id="blog" className="py-20 bg-gray-100" data-aos="fade-up" >
                 <h2 className="text-3xl font-bold text-center">{translations.blog}</h2><br />
-                <div className="container mx-auto px-4 " style={{ width: '100vw', height: '80vh'}}>
+                <div className="container mx-auto px-4 " style={{ width: '100vw', height: '80vh' }}>
                     <iframe src="https://jackhannula.blogspot.com" width="80%" height="500px">
                         <p>Tu navegador no soporta iFrame.</p>
                     </iframe>
                 </div>
-            </div>      
+            </div>
 
             {/* Contacto */}
             <div id="contact" className="py-20 bg-gray-100" data-aos="fade-up">
                 <h2 className="text-3xl font-bold text-center">{translations.contacto}</h2>
                 <div className="mt-8 text-center">
-                    {info ? (                            
+                    {info ? (
                         <>
                             <p className="mb-4 text font-primary">{translations.mensajeContacto}:</p><a href={`mailto:${info.email}`} className="inline-block bg-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full transition-colors duration-300">
                                 {translations.enviarCorreoA} {info.email}
                             </a>
-                        </>                    
+                        </>
                     ) : (
                         <p className="mb-4 text font-primary">{translations.noInfoAvailable}:</p>
                     )}
-                </div>                
+                </div>
             </div>
         </div>
     );
