@@ -198,14 +198,12 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                             </h1><br />
                             <h2 className="text-3xl font-bold text-center">by Jack Hannula</h2>
                         </div> */}
-                        <div className="absolute inset-0 flex **flex-col** items-center justify-center">
-                            <div className="row">
-                                <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold">
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="flex flex-col items-center">
+                                <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold mb-4">
                                     Painting México
                                 </h1>
-                            </div>
-                            <div className="row">
-                                <h2 className="text-3xl font-bold text-center">by Jack Hannula</h2>
+                                <h2 className="text-3xl font-bold text-center block">by Jack Hannula</h2>
                             </div>
                         </div>
 
