@@ -192,12 +192,20 @@ export default function Welcome({ info, artworks, sections, posts, sales, users 
                 {info ? (
                     <div className="relative">
                         <img src={info.banner} alt="Banner" className="w-full h-auto" style={{ maxHeight: 'none' }} />
-                        <div className="absolute inset-0 flex items-center justify-center">
+                        {/* <div className="absolute inset-0 flex items-center justify-center">
                             <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold">
                                 Painting México
                             </h1><br />
                             <h2 className="text-3xl font-bold text-center">by Jack Hannula</h2>
+                        </div> */}
+                        <div className="absolute inset-0 flex **flex-col** items-center justify-center">
+                            <h1 className="text-white text-5xl md:text-7xl lg:text-8xl font-bold">
+                                Painting México
+                            </h1>
+                            <br />
+                            <h2 className="text-3xl font-bold text-center">by Jack Hannula</h2>
                         </div>
+
                     </div>
                 ) : (
                     <p className="mb-4 text font-primary">{translations.noInfoAvailable}:</p>
